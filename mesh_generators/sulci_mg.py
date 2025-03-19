@@ -14,14 +14,18 @@ import matplotlib.pyplot as plt
 class SulciMeshGenerator:
     
     def __init__(self, 
+                 resolution,
                  L_mm, H_mm,  
                  nx, ny, 
-                 sulci_n, sulci_h_mm, sulci_width_mm, sulci_spacing="Uniform"):
+                 sulci_n, sulci_h_mm, sulci_width_mm, sulci_spacing="Uniform"
+                 ):
         """
         Creates a 2D mesh for Subarachnoid Space (SAS) simulations, taking real world
         measurements and dimensions as input.
 
         Parameters
+        - resolution (int): Resolution for mesh generation.
+
         - L_mm (float): Length of the domain in mm.
         - H_mm (float): Height of the domain in mm.
 
@@ -34,10 +38,14 @@ class SulciMeshGenerator:
         - sulci_width_mm (float): Width of a single sulcus in mm.
         - sulci_spacing (str): 'Uniform' for even spacing, 'Noisy' for randomised positions.
         """
-
+        
         # -----------------------------------------------------------
         # Input Validation
         # -----------------------------------------------------------
+
+        # Check resolution
+        if not isinstance(resolution, int) or resolution <= 0:
+            raise ValueError("Error: Resolution must be a strictly positive integer.")
 
         # Check domain dimensions
         if L_mm <= 0 or H_mm <= 0:
@@ -65,7 +73,7 @@ class SulciMeshGenerator:
             raise ValueError(f"Error: The total sulcus width ({sulci_width_mm * sulci_n} mm) must be smaller than the domain length ({L_mm} mm). Reduce sulci_n or sulci_width_mm.")
 
         # -----------------------------------------------------------
-        # Non-Dimensionalisation
+        # Non-Dimensionalisation & Store Variables
         # -----------------------------------------------------------
 
         # Defining characteristic length (using domain length as reference)
@@ -83,11 +91,12 @@ class SulciMeshGenerator:
         self.sulci_h = sulci_h_mm / self.L_ref
         self.sulci_width = sulci_width_mm / self.L_ref
 
-        # Other parameters
+        # Store other parameters
         self.nx = nx
         self.ny = ny
         self.sulci_n = sulci_n
         self.sulci_spacing = sulci_spacing
+        self.resolution = resolution
 
     # -----------------------------------------------------------
     # Generate sulci
@@ -132,7 +141,7 @@ class SulciMeshGenerator:
     # Generate full mesh
     # -----------------------------------------------------------
 
-    def generate_mesh(self, resolution=50):
+    def generate_mesh(self):
         """
         Generates the finite element mesh for the SAS domain.
         """
@@ -149,6 +158,5 @@ class SulciMeshGenerator:
         polygon = Polygon([Point(x, y) for x, y in points])
 
         # Generate the mesh
-        return generate_mesh(polygon, resolution)
-
+        return generate_mesh(polygon, self.resolution)
 
