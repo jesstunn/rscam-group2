@@ -33,17 +33,16 @@ def top(x, on_boundary):
 noslip = Constant((0.0, 0.0))
 noslip2 = Constant((0.0))
 outflow = Expression(("0.0","-pow(x[0],2)+100"),degree=2)
-inflow = Expression(("x[1]*(x[1]-1)", "0.0"), degree = 2)
+inflow = Expression(("x[1]*(1 - x[1])", "0.0"), degree = 2)
 
 bc1 = DirichletBC(W.sub(1), Constant(0.0), right) 
 bc2 = DirichletBC(W.sub(0), noslip, bottom) 
-bc5 = DirichletBC(W.sub(0).sub(1), Constant(0.0), right) 
-bc3 = DirichletBC(W.sub(0), inflow, left) 
-bc0 = DirichletBC(W.sub(0), outflow, top) 
+bc3 = DirichletBC(W.sub(0), inflow, left)
+bc0 = DirichletBC(W.sub(0), noslip, top) 
 
 
 # Collect boundary conditions
-bcs = [bc0, bc1, bc2, bc3, bc5]
+bcs = [bc0, bc1, bc2, bc3]
 
 (u, p) = TrialFunctions(W)
 (v, q) = TestFunctions(W)
@@ -73,12 +72,12 @@ solver.solve(U.vector(), bb)
 u, p = U.split()
 ux, uy = u.split()
 
-bc1_c = DirichletBC(C, Constant(1.0), right) 
-bc5_c = DirichletBC(C, Constant(0.0), left) 
+bc1_c = DirichletBC(C, Constant(0.0), right) 
+bc5_c = DirichletBC(C, Constant(1.0), left) 
 
 c_sol = TrialFunction(C)
 phi = TestFunction(C)
-D = Constant(0.01)
+D = Constant(5)
 a_c = (D * inner(grad(c_sol), grad(phi)) + inner(dot(u, grad(c_sol)), phi)) * dx
 L_c = Constant(0) * phi * dx
 
