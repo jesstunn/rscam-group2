@@ -126,38 +126,3 @@ class WavyWallMeshGenerator:
         }
     
 
-# ========================================================
-# Testing wavy wall generator
-# ========================================================
-
-# Define test parameters
-L_mm = 10               # Length of the domain in mm
-H_mm = 1                # Height of the domain in mm
-sulcus_depth_mm = 1     # Depth of each sulcus (mm)
-num_sulci = 10          # Number of sulci (full cosine wave cycles)
-nx = 1000               # Mesh resolution (x-direction)
-ny = 100                # Mesh resolution (y-direction)
-
-# Create an instance of the WavyWallMeshGenerator class
-mesh_generator = WavyWallMeshGenerator(
-    L_mm=L_mm, H_mm=H_mm, 
-    nx=nx, ny=ny, 
-    sulcus_depth_mm=sulcus_depth_mm, num_sulci=num_sulci
-)
-
-# Generate the mesh
-mesh = mesh_generator.generate_mesh(resolution=60)
-
-# Save the mesh as a .pvd file for ParaView
-File("wavy_wall_mesh.pvd") << mesh
-
-# Plot the mesh
-plot(mesh)
-plt.title("Wavy Wall Mesh")
-plt.show()
-
-# Output paramteres of simulation
-params = mesh_generator.get_parameters()
-
-for key, value in params.items():
-    print(f"{key}: {value}")
