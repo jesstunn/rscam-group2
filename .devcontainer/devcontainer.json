@@ -1,0 +1,29 @@
+{
+  "name": "FEniCS with Docker",
+  "image": "quay.io/fenicsproject/stable:latest",
+  "remoteUser": "fenics",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-toolsai.jupyter"
+      ],
+      "settings": {
+        "python.terminal.activateEnvironment": true
+      }
+    }
+  },
+
+  "forwardPorts": [8888],
+  "portsAttributes": {
+    "8888": {
+      "label": "Jupyter Notebook",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  
+  "runArgs": ["--ipc=host"],
+
+  "postCreateCommand": "pip install matplotlib numpy scipy"
+}
