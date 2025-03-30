@@ -97,7 +97,7 @@ This will:
 
 The simulation results can be visualised in several ways:
 
-1. **PNG Images**: Automatically generated in the `visuals` subdirectory of results
+1. **PNG Images**: Automatically generated in the directory of results
    - Mesh visualisation
    - Velocity field
    - Concentration field
