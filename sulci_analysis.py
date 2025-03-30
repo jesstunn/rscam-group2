@@ -215,16 +215,7 @@ def run_sulci_analysis(output_dir="sulci_results"):
     return results
 
 def compare_results(results, output_dir):
-    """
-    Compare and visualise results from different sulci configurations.
     
-    Parameters:
-    -----------
-    results : dict
-        Dictionary with results for each case
-    output_dir : str
-        Directory to save comparison plots
-    """
     # Extract data for plotting
     case_names = list(results.keys())
     mass_values = [results[case]["total_mass"] for case in case_names]
@@ -260,7 +251,7 @@ def compare_results(results, output_dir):
         
         # Add value labels on top of bars
         for bar, value in zip(bars, flow_values):
-            plt.text(bar.get_x() + bar.get_width()/2, value + 0.01*max(flow_values), 
+            plt.text(bar.get_x() + bar.get_width()/2, value + 0.01*max(flow_values) if max(flow_values) > 0 else 0.01, 
                     f"{value:.4f}", ha='center', va='bottom')
         
         plt.ylabel("Flow Rate")
@@ -270,13 +261,16 @@ def compare_results(results, output_dir):
         plt.savefig(os.path.join(comparison_dir, "flow_comparison.png"), dpi=300)
         plt.close()
     
+    # Check if flow_values has any non-zero values
+    max_flow = max(flow_values) if flow_values and max(flow_values) > 0 else 1.0
+    
     # Save comparison data
     comparison_data = {
         "cases": case_names,
         "total_mass": mass_values,
         "flow_rate": flow_values,
-        "normalized_mass": [m/max(mass_values) for m in mass_values],
-        "normalized_flow": [f/max(flow_values) if f is not None else None for f in flow_values]
+        "normalized_mass": [m/max(mass_values) if max(mass_values) > 0 else 0.0 for m in mass_values],
+        "normalized_flow": [f/max_flow if f is not None else None for f in flow_values]
     }
     
     with open(os.path.join(comparison_dir, "comparison_data.json"), "w") as f:
