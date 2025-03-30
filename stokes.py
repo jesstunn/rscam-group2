@@ -117,7 +117,7 @@ def compute_multiple_flow_rates(u, mesh, num_sections=3):
     
     print("\nComputing flow rates at multiple cross-sections:")
     for i, x_pos in enumerate(x_positions):
-        # Define a cross-section boundary similar to your other boundaries
+        # Define a cross-section boundary similar to other boundaries
         def cross_section(x, on_boundary):
             # This checks for points near the vertical line at x_pos
             # We don't need on_boundary here since we want interior points too
