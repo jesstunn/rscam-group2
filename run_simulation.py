@@ -14,10 +14,10 @@ from datetime import datetime
 # Import our modules
 from parameters import Parameters
 from mesh import mesh_generator, visualise_mesh
-from stokes import stokes_solver, compute_flow_rate, visualise_velocity, save_flow_fields
+from stokes import stokes_solver, compute_multiple_flow_rates, visualise_velocity, save_flow_fields
 from adv_diff import advdiff_solver, calculate_total_mass, visualise_concentration, save_concentration_field
 from mass_analysis import run_mass_analysis
-from sulci_analysis import run_sulci_analysis
+from sulci_analysis import run_sulci_analysis  
 
 def run_simulation(params=None, output_dir="simulation_results"):
     """
@@ -131,7 +131,8 @@ def run_simulation(params=None, output_dir="simulation_results"):
     
     # Calculate flow rate
     try:
-        flow_rate = compute_flow_rate(u, mesh)
+        x_positions, flow_rates = compute_multiple_flow_rates(u, mesh, num_sections=5)
+        flow_rate = max(flow_rates) if flow_rates else 0.0
     except Exception as e:
         print("Error: Could not compute flow rate: {}".format(e))
         flow_rate = None

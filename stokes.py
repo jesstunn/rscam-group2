@@ -83,50 +83,85 @@ def stokes_solver(mesh, W, H, left, right, bottom, top):
     u, p = U.split()
     return u, p
 
-def compute_flow_rate(u, mesh, cross_section_x=None):
+def compute_multiple_flow_rates(u, mesh, num_sections=3):
     """
-    Compute the flow rate (flux) across a vertical cross-section.
+    Compute flow rates at multiple cross-sections along the channel.
     
     Parameters:
     u : dolfin.Function
         Velocity field
     mesh : dolfin.Mesh
         The computational mesh
-    cross_section_x : float, optional
-        x-coordinate of the cross-section (defaults to domain midpoint)
+    num_sections : int, optional
+        Number of cross-sections to evaluate (default: 3)
     
     Returns:
-    flow_rate : float
-        Flow rate across the cross-section
+    tuple
+        (x_positions, flow_rates): Lists of x-positions and corresponding flow rates
     """
-    if cross_section_x is None:
-        # Default to domain midpoint
-        cross_section_x = mesh.coordinates()[:, 0].max() / 2
+    # Get domain bounds
+    x_min = mesh.coordinates()[:, 0].min()
+    x_max = mesh.coordinates()[:, 0].max()
+    L = x_max - x_min
     
-    # Define a plane (line in 2D) at the specified x-coordinate
-    class CrossSection(SubDomain):
-        def __init__(self, x):
-            self.x = x
-            super().__init__()
-            
-        def inside(self, x, on_boundary):
-            return near(x[0], self.x, 1e-14)
+    # Define cross-section positions (20%, 50%, 80% of domain length)
+    if num_sections == 3:
+        x_positions = [x_min + 0.2*L, x_min + 0.5*L, x_min + 0.8*L]
+    else:
+        # If not exactly 3 sections, space them evenly with margins
+        margin = 0.1 * L
+        x_positions = np.linspace(x_min + margin, x_max - margin, num_sections)
     
-    # Mark the cross-section
-    boundaries = MeshFunction("size_t", mesh, mesh.topology().dim() - 1)
-    boundaries.set_all(0)
-    CrossSection(cross_section_x).mark(boundaries, 1)
+    # Calculate flow rates
+    flow_rates = []
     
-    # Define normal vector (pointing in positive x direction)
-    n = Constant((1.0, 0.0))
+    print("\nComputing flow rates at multiple cross-sections:")
+    for i, x_pos in enumerate(x_positions):
+        # Define a cross-section boundary similar to your other boundaries
+        def cross_section(x, on_boundary):
+            # This checks for points near the vertical line at x_pos
+            # We don't need on_boundary here since we want interior points too
+            return near(x[0], x_pos, mesh.hmin()/2)
+        
+        # Mark the facets on this cross-section
+        facet_markers = MeshFunction("size_t", mesh, mesh.topology().dim()-1, 0)
+        
+        # Mark all facets, not just boundary facets
+        for facet in facets(mesh):
+            mp = facet.midpoint()  # Get facet midpoint
+            if cross_section(mp, False):  # Check if midpoint is on cross-section
+                facet_markers[facet] = 1
+        
+        # Count marked facets
+        num_marked = sum(1 for f in facets(mesh) if facet_markers[f] == 1)
+        
+        # Create a measure for integration
+        ds = Measure("ds", domain=mesh, subdomain_data=facet_markers)
+        
+        # Use interior facet measure for internal facets
+        dS = Measure("dS", domain=mesh, subdomain_data=facet_markers)
+        
+        # Normal vector (pointing in positive x direction)
+        n = Constant((1.0, 0.0))
+        
+        # Compute flow rate by integrating over marked facets
+        # For boundary facets: dot(u, n)*ds(1)
+        # For interior facets: dot(avg(u), n('+'))*dS(1)
+        boundary_flow = assemble(dot(u, n)*ds(1))
+        interior_flow = assemble(dot(avg(u), n('+'))*dS(1))
+        flow_rate = boundary_flow + interior_flow
+        
+        flow_rates.append(flow_rate)
+        print(f"Cross-section {i+1} at x = {x_pos:.3f}: Marked {num_marked} facets, Flow = {flow_rate:.6f}")
     
-    # Create a measure
-    ds = Measure("ds", domain=mesh, subdomain_data=boundaries)
+    if flow_rates:
+        print(f"Average flow rate: {sum(flow_rates)/len(flow_rates):.6f}")
+        print(f"Max flow rate: {max(flow_rates):.6f}")
+    else:
+        print("No valid flow rates calculated")
     
-    # Compute flow rate by integrating the normal component of velocity
-    flow_rate = assemble(dot(u, n)*ds(1))
-    
-    return flow_rate
+    return x_positions, flow_rates
+
 
 def compute_max_velocity(u):
     """

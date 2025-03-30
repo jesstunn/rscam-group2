@@ -15,7 +15,7 @@ from copy import deepcopy
 # Import project modules
 from parameters import Parameters
 from mesh import mesh_generator, visualise_mesh
-from stokes import stokes_solver, compute_flow_rate, visualise_velocity, save_flow_fields
+from stokes import stokes_solver, compute_multiple_flow_rates, visualise_velocity, save_flow_fields
 from adv_diff import advdiff_solver, calculate_total_mass, visualise_concentration, save_concentration_field
 
 def run_single_sulci_simulation(params, output_dir):
@@ -107,7 +107,8 @@ def run_single_sulci_simulation(params, output_dir):
     
     # Calculate flow rate
     try:
-        flow_rate = compute_flow_rate(u, mesh)
+        x_positions, flow_rates = compute_multiple_flow_rates(u, mesh, num_sections=5)
+        flow_rate = max(flow_rates) if flow_rates else 0.0
     except Exception as e:
         print(f"Error: Could not compute flow rate: {e}")
         flow_rate = None
@@ -215,7 +216,6 @@ def run_sulci_analysis(output_dir="sulci_results"):
     return results
 
 def compare_results(results, output_dir):
-    
     # Extract data for plotting
     case_names = list(results.keys())
     mass_values = [results[case]["total_mass"] for case in case_names]

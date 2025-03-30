@@ -176,7 +176,7 @@ def mesh_generator(resolution,
 
 def visualise_mesh(mesh_data, filename="mesh.png"):
     """
-    Save a visualization of the mesh to a file in the 'visuals' folder.
+    Save a visualisation of the mesh to a file in the 'visuals' folder.
     
     Parameters:
     mesh_data : dict or dolfin.Mesh
