@@ -186,14 +186,7 @@ def visualise_mesh(mesh_data, filename="mesh.png"):
     """
     import matplotlib.pyplot as plt
     import os
-    
-    # Create the visuals directory if it doesn't exist
-    visuals_dir = "visuals"
-    os.makedirs(visuals_dir, exist_ok=True)
-    
-    # Complete file path
-    filepath = os.path.join(visuals_dir, filename)
-    
+        
     # Extract mesh from input
     if isinstance(mesh_data, dict) and "mesh" in mesh_data:
         mesh = mesh_data["mesh"]
@@ -221,8 +214,8 @@ def visualise_mesh(mesh_data, filename="mesh.png"):
     
     # Save the file
     try:
-        plt.savefig(filepath, dpi=300)
+        plt.savefig(filename, dpi=300)
         plt.close()
-        print(f"Mesh visualization saved to {filepath}")
+        print(f"Mesh visualisation saved to {filename}")
     except Exception as e:
-        print(f"Warning: Failed to save mesh plot to {filepath}: {str(e)}")
+        print(f"Error: Failed to save mesh plot to {filename}: {str(e)}")
