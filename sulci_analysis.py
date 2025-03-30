@@ -17,7 +17,124 @@ from parameters import Parameters
 from mesh import mesh_generator, visualise_mesh
 from stokes import stokes_solver, compute_flow_rate, visualise_velocity, save_flow_fields
 from adv_diff import advdiff_solver, calculate_total_mass, visualise_concentration, save_concentration_field
-from run_simulation import run_simulation
+
+def run_single_sulci_simulation(params, output_dir):
+    """
+    Run a single simulation with given sulci parameters.
+    This is similar to run_simulation but defined directly in this module
+    to avoid circular imports.
+    """
+    # Start timing
+    start_time = time.time()
+    
+    # Create output directory if it doesn't exist
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Create visuals directory if it doesn't exist
+    visuals_dir = os.path.join(output_dir, "plots")
+    os.makedirs(visuals_dir, exist_ok=True)
+    
+    # Print parameters
+    print("\nSimulation Parameters:")
+    print(params)
+    
+    # Generate mesh
+    print("\n1. Generating mesh...")
+    mesh_result = mesh_generator(
+        params.resolution,
+        params.L, params.H,  
+        params.nx, params.ny, 
+        params.sulci_n, params.sulci_h, params.sulci_width
+    )
+    
+    # Extract mesh and boundary markers
+    if isinstance(mesh_result, dict):
+        mesh = mesh_result["mesh"]
+        left = mesh_result["boundary_markers"]["left"]
+        right = mesh_result["boundary_markers"]["right"]
+        bottom = mesh_result["boundary_markers"]["bottom"]
+        top = mesh_result["boundary_markers"]["top"]
+        mesh_info = mesh_result["mesh_info"]
+    else:
+        mesh, left, right, bottom, top = mesh_result
+        mesh_info = {"num_vertices": mesh.num_vertices(), "num_cells": mesh.num_cells()}
+    
+    # Save mesh visualisation
+    try:
+        visualise_mesh(mesh_result, os.path.join(visuals_dir, "mesh.png"))
+    except Exception as e:
+        print(f"Error: Could not save mesh visualisation: {e}")
+    
+    # Build function spaces
+    print("2. Building function spaces...")
+    V = VectorFunctionSpace(mesh, "P", 2)  
+    Q = FunctionSpace(mesh, "P", 1)  
+    W = FunctionSpace(mesh, MixedElement([V.ufl_element(), Q.ufl_element()]))
+    C = FunctionSpace(mesh, "CG", 1)
+    
+    # Solve Stokes
+    print("3. Solving Stokes equations...")
+    u, p = stokes_solver(mesh, W, params.H, left, right, bottom, top)
+    
+    # Save flow visualisation
+    try:
+        visualise_velocity(u, mesh, os.path.join(visuals_dir, "velocity.png"))
+        save_flow_fields(u, p, directory=output_dir)
+    except Exception as e:
+        print(f"Error: Could not save flow fields: {e}")
+    
+    # Solve Advection-Diffusion
+    print("4. Solving advection-diffusion equation...")
+    c = advdiff_solver(
+        mesh, left, right, bottom,
+        u, C,
+        D=Constant(params.D),
+        mu=Constant(params.mu)
+    )
+    
+    # Save concentration visualisation
+    try:
+        visualise_concentration(c, mesh, os.path.join(visuals_dir, "concentration.png"))
+        save_concentration_field(c, directory=output_dir)
+    except Exception as e:
+        print(f"Error: Could not save concentration field: {e}")
+    
+    # Post-process
+    print("5. Post-processing results...")
+    
+    # Calculate mass
+    total_mass = calculate_total_mass(c, mesh)
+    
+    # Calculate flow rate
+    try:
+        flow_rate = compute_flow_rate(u, mesh)
+    except Exception as e:
+        print(f"Error: Could not compute flow rate: {e}")
+        flow_rate = None
+    
+    # End timing
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    
+    # Print summary
+    print("\nSimulation Results:")
+    print(f"  Total mass: {total_mass:.6f}")
+    if flow_rate is not None:
+        print(f"  Flow rate: {flow_rate:.6f}")
+    print(f"  Péclet number: {params.Pe:.2f}")
+    print(f"  Elapsed time: {elapsed_time:.2f} seconds")
+    
+    # Return results
+    return {
+        "params": params,
+        "mesh": mesh,
+        "u": u,
+        "p": p,
+        "c": c,
+        "total_mass": total_mass,
+        "flow_rate": flow_rate,
+        "elapsed_time": elapsed_time
+    }
 
 def run_sulci_analysis(output_dir="sulci_results"):
     """
@@ -78,7 +195,7 @@ def run_sulci_analysis(output_dir="sulci_results"):
         case_dir = os.path.join(output_dir, case["name"])
         
         # Run simulation with these parameters
-        case_results = run_simulation(params, case_dir)
+        case_results = run_single_sulci_simulation(params, case_dir)
         
         # Store key results
         results[case["name"]] = {
