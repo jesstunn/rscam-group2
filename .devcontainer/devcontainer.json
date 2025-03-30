@@ -2,7 +2,6 @@
   "name": "FEniCS with Docker",
   "image": "quay.io/fenicsproject/stable:latest",
   "remoteUser": "fenics",
-
   "customizations": {
     "vscode": {
       "extensions": [
@@ -14,7 +13,6 @@
       }
     }
   },
-
   "forwardPorts": [8888],
   "portsAttributes": {
     "8888": {
@@ -24,6 +22,7 @@
   },
   
   "runArgs": ["--ipc=host"],
-
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/${localWorkspaceFolderBasename},type=bind,consistency=cached",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "postCreateCommand": "pip install matplotlib numpy scipy"
 }
