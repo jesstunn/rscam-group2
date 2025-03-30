@@ -4,15 +4,22 @@ This project simulates advection-diffusion in a channel with optional sulci on t
 
 ## Project Structure
 
-The codebase is organised into several modules:
+The repository is organised into the following structure:
 
-- `parameters.py`: Defines simulation parameters
-- `mesh.py`: Handles mesh generation and visualisation
-- `stokes.py`: Solves the Stokes equations for fluid flow
-- `adv_diff.py`: Solves the advection-diffusion equation for concentration
-- `mass_analysis.py`: Analyses how mass depends on Peclet number and uptake
-- `sulci_analysis.py`: Studies the effect of differing sulci geometry
-- `run_simulation.py`: Main script to run simulations and parameter studies
+- Main simulation files:
+  - `parameters.py`: Defines simulation parameters
+  - `mesh.py`: Handles mesh generation and visualisation
+  - `stokes.py`: Solves the Stokes equations for fluid flow
+  - `adv_diff.py`: Solves the advection-diffusion equation for concentration
+  - `mass_analysis.py`: Analyses how mass depends on Peclet number and uptake
+  - `sulci_analysis.py`: Studies the effect of differing sulci geometry
+  - `run_simulation.py`: Main script to run simulations and parameter studies
+
+- `development/`: Contains preliminary work and test files used during the development process
+  - Draft versions of simulation components
+  - Test problems with simplified geometries
+  - Experimental implementations
+  - Alternative approaches that were explored
 
 ## Prerequisites
 
@@ -43,7 +50,7 @@ python3 run_simulation.py --sulci 2 --pe 10 --mu 5
 
 This runs a simulation with:
 - 2 sulci
-- Péclet number of 10
+- Peclet number of 10
 - Uptake parameter of 5
 
 ### Specifying Output Directory
@@ -58,7 +65,7 @@ python3 run_simulation.py --output-dir custom_results
 
 ### Mass Analysis Study
 
-To run a comprehensive analysis of how total mass depends on Péclet number and uptake parameter:
+To run a comprehensive analysis of how total mass depends on Peclet number and uptake parameter:
 
 ```bash
 python3 run_simulation.py --mass_study
