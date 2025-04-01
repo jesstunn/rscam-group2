@@ -33,6 +33,32 @@ def rerun_sulci_comparison(json_file="comparison_data_dual.json", output_dir=Non
         fixed_mu = data["fixed_mu"]
         results = data["results"]
         
+        # Convert numeric values back to their appropriate types
+        # This handles the case where JSON converts numbers to strings
+        pe_values = [float(pe) if isinstance(pe, str) else pe for pe in pe_values]
+        mu_values = [float(mu) if isinstance(mu, str) else mu for mu in mu_values]
+        fixed_pe = float(fixed_pe) if isinstance(fixed_pe, str) else fixed_pe
+        fixed_mu = float(fixed_mu) if isinstance(fixed_mu, str) else fixed_mu
+        
+        # Fix the structure of the results dictionary by converting string keys to numeric
+        fixed_results = {"varying_pe": {}, "varying_mu": {}}
+        
+        # Process varying_pe data
+        for geom in geometries:
+            fixed_results["varying_pe"][geom] = {}
+            for pe_str, values in results["varying_pe"][geom].items():
+                # Convert the string key to float or int as needed
+                pe_key = int(float(pe_str)) if float(pe_str).is_integer() else float(pe_str)
+                fixed_results["varying_pe"][geom][pe_key] = values
+        
+        # Process varying_mu data
+        for geom in geometries:
+            fixed_results["varying_mu"][geom] = {}
+            for mu_str, values in results["varying_mu"][geom].items():
+                # Convert the string key to float or int as needed
+                mu_key = int(float(mu_str)) if float(mu_str).is_integer() else float(mu_str)
+                fixed_results["varying_mu"][geom][mu_key] = values
+        
         print(f"Loaded data with:")
         print(f"  Geometries: {geometries}")
         print(f"  Pe values: {pe_values}")
@@ -46,9 +72,9 @@ def rerun_sulci_comparison(json_file="comparison_data_dual.json", output_dir=Non
             if output_dir == "":
                 output_dir = "."
         
-        # Call the existing function with the loaded data
+        # Call the existing function with the fixed data
         print(f"Rerunning compare_results_dual function...")
-        compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fixed_mu)
+        compare_results_dual(fixed_results, output_dir, pe_values, mu_values, fixed_pe, fixed_mu)
         
         print(f"Successfully regenerated plots in {output_dir}/comparison/")
         return True
@@ -71,7 +97,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     rerun_sulci_comparison(args.json_file, args.output_dir)
-
 
 # Use this in terminal to run:
 # python3 rerun_sulci_comparison.py --json-file=sulci_study_results/comparison/comparison_data_dual.json --output-dir=new_plots
