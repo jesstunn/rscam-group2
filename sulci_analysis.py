@@ -415,14 +415,13 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
     
     # --------------------------------------------------------
 
-    # Create simplified numbered labels and label mapping
-    numbered_labels = ["1", "2", "3", "4"]
-    label_mapping = {
-        "1": "Small Height, Small Width",
-        "2": "Small Height, Large Width",
-        "3": "Large Height, Small Width", 
-        "4": "Large Height, Large Width"
-    }
+    # Create multiline labels for better readability
+    multiline_labels = [
+        "Small Height,\nSmall Width",
+        "Small Height,\nLarge Width",
+        "Large Height,\nSmall Width",
+        "Large Height,\nLarge Width"
+    ]
 
     # Panel figure for varying Pe
     fig1, axes1 = plt.subplots(1, len(pe_values), figsize=(18, 6), sharey=True)
@@ -451,7 +450,7 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
 
     # Add a text box with label explanations
     fig1.text(0.15, 0.03, 
-            "\n".join([f"{num} = {desc}" for num, desc in label_mapping.items()]),
+            "\n".join([f"{num} = {desc}" for num, desc in multiline_labels .items()]),
             fontsize=12, 
             bbox=dict(facecolor='white', alpha=0.7, boxstyle='round,pad=0.5'))
 
@@ -466,7 +465,7 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
     plt.close()
 
     # --------------------------------------------------------
-    
+
     # Panel figure for varying mu
     fig2, axes2 = plt.subplots(1, len(mu_values), figsize=(18, 6), sharey=True)
 
@@ -494,7 +493,7 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
 
     # Add a text box with label explanations
     fig2.text(0.15, 0.03, 
-            "\n".join([f"{num} = {desc}" for num, desc in label_mapping.items()]),
+            "\n".join([f"{num} = {desc}" for num, desc in multiline_labels .items()]),
             fontsize=12, 
             bbox=dict(facecolor='white', alpha=0.7, boxstyle='round,pad=0.5'))
 
