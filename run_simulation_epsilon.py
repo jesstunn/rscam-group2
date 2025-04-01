@@ -8,6 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 os.makedirs("Plots", exist_ok=True)
+
 # ========================================================
 # Class for storing Parameters
 # ========================================================

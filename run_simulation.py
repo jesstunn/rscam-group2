@@ -217,14 +217,19 @@ def run_mass_parameter_study(output_dir="mass_study_results"):
     return results
 
 def run_sulci_parameter_study(output_dir="sulci_study_results"):
-    """Run a study on the effect of sulci geometry"""
-    print("\nRunning sulci geometry parameter study...")
+    """Run a study on the effect of sulci geometry with varying Pe and mu"""
+    print("\nRunning sulci geometry parameter study with varying Pe and mu...")
     
-    # This will run a series of simulations to analyse how the shape of the sulci
-    # affects the simulation
+    # This will run a series of simulations to analyse how shape of the sulci
+    # affects the solution under different Pe and mu conditions
     results = run_sulci_analysis(output_dir)
     
     print("Sulci geometry parameter study completed!")
+    print("Created visualisations showing the effect of geometry for:")
+    print("  - Different Peclet numbers (Pe = 1, 10, 100) with fixed μ = 1.0")
+    print("  - Different uptake parameters (μ = 0.1, 1.0, 10.0) with fixed Pe = 10")
+    print(f"Results saved in: {output_dir}/comparison/")
+    
     return results
 
 # This part makes the script executable from the command line:

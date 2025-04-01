@@ -139,13 +139,16 @@ def run_single_sulci_simulation(params, output_dir):
 
 def run_sulci_analysis(output_dir="sulci_results"):
     """
-    Run a study on the effect of sulci geometry on flow and concentration.
+    Runs a study on the effect of sulci geometry on flow and concentration.
+
     Examines 4 cases:
     1. Small height, small width
     2. Small height, large width
     3. Large height, small width
     4. Large height, large width
     
+    Across multiple Pe and mu values for comparison.
+
     Parameters:
     output_dir : str
         Directory to save results
@@ -154,6 +157,7 @@ def run_sulci_analysis(output_dir="sulci_results"):
     dict
         Dictionary with results for each case
     """
+
     # Create output directory
     os.makedirs(output_dir, exist_ok=True)
     
@@ -163,60 +167,152 @@ def run_sulci_analysis(output_dir="sulci_results"):
     small_width = 0.5   # Small sulcus width in mm
     large_width = 2.0   # Large sulcus width in mm
     
-    # Define the 4 cases
-    cases = [
+    # Define the 4 geometry cases
+    geometries = [
         {"name": "small_height_small_width", "height": small_height, "width": small_width},
         {"name": "small_height_large_width", "height": small_height, "width": large_width},
         {"name": "large_height_small_width", "height": large_height, "width": small_width},
         {"name": "large_height_large_width", "height": large_height, "width": large_width}
     ]
     
-    # Store results
-    results = {}
+    # Define different Pe and mu values to test
+    pe_values = [1, 10, 100]      # Low, medium, high Pe
+    mu_values = [0.1, 1.0, 10.0]  # Low, medium, high uptake
     
-    # Run simulations for each case
-    for case in cases:
-        print("\n" + "="*50)
-        print(f"Running case: {case['name']}")
-        print("="*50)
-        
-        # Create parameters with default values
-        params = Parameters()
-        
-        # Set sulci parameters for this case
-        params.sulci_n = 1  # Fixed number of sulci
-        params.sulci_h_mm = case["height"]
-        params.sulci_width_mm = case["width"]
-        
-        # Validate and recalculate derived parameters
-        params.validate()
-        params.nondim()
-        
-        # Create case-specific output directory
-        case_dir = os.path.join(output_dir, case["name"])
-        
-        # Run simulation with these parameters
-        case_results = run_single_sulci_simulation(params, case_dir)
-        
-        # Store key results
-        results[case["name"]] = {
-            "params": {
-                "sulci_height": params.sulci_h_mm,
-                "sulci_width": params.sulci_width_mm,
-                "Pe": params.Pe,
-                "mu": params.mu
-            },
-            "total_mass": float(case_results["total_mass"]),
-            "flow_rate": float(case_results["flow_rate"]) if case_results["flow_rate"] is not None else None
-        }
+    # Store results for all combinations
+    all_results = {"varying_pe": {}, "varying_mu": {}}
     
-    # Comparative analysis
-    compare_results(results, output_dir)
-    
-    return results
+    # --------------------------------------------------------
 
-def compare_results(results, output_dir):
+    # Run simulations for each geometry with varying Pe (fixed mu)
+    fixed_mu = 1.0  # Fixed mu value for the varying Pe part
+    
+    for geometry in geometries:
 
+        all_results["varying_pe"][geometry["name"]] = {}
+        
+        for pe in pe_values:
+
+            print("\n" + "="*50)
+            print(f"Running case: {geometry['name']} with Pe={pe}, mu={fixed_mu}")
+            print("="*50)
+            
+            # Create parameters with default values
+            params = Parameters()
+            
+            # Set geometry parameters for this case
+            params.sulci_n = 1  
+            params.sulci_h_mm = geometry["height"]
+            params.sulci_width_mm = geometry["width"]
+            
+            # Set Pe value (adjusting U_ref to achieve desired Pe)
+            params.U_ref = pe * params.D_mms2 / params.H_mm
+            params.mu = fixed_mu
+            
+            # Validate and recalculate derived parameters
+            params.validate()
+            params.nondim()
+            
+            # Create case-specific output directory
+            case_dir = os.path.join(output_dir, f"{geometry['name']}_Pe{pe}_mu{fixed_mu}")
+            
+            # Run simulation with these parameters
+            case_results = run_single_sulci_simulation(params, case_dir)
+            
+            # Store key results
+            all_results["varying_pe"][geometry["name"]][pe] = {
+                "params": {
+                    "sulci_height": params.sulci_h_mm,
+                    "sulci_width": params.sulci_width_mm,
+                    "Pe": params.Pe,
+                    "mu": params.mu
+                },
+                "total_mass": float(case_results["total_mass"]),
+                "flow_rate": float(case_results["flow_rate"]) if case_results["flow_rate"] is not None else None
+            }
+    
+    # --------------------------------------------------------
+
+    # Run simulations for each geometry with varying mu (fixed Pe)
+    fixed_pe = 10  # Fixed Pe value for the varying mu part
+    
+    for geometry in geometries:
+        all_results["varying_mu"][geometry["name"]] = {}
+        
+        for mu in mu_values:
+            print("\n" + "="*50)
+            print(f"Running case: {geometry['name']} with Pe={fixed_pe}, mu={mu}")
+            print("="*50)
+            
+            # Create parameters with default values
+            params = Parameters()
+            
+            # Set geometry parameters for this case
+            params.sulci_n = 1  # Fixed number of sulci
+            params.sulci_h_mm = geometry["height"]
+            params.sulci_width_mm = geometry["width"]
+            
+            # Set Pe and mu values
+            params.U_ref = fixed_pe * params.D_mms2 / params.H_mm
+            params.mu = mu
+            
+            # Validate and recalculate derived parameters
+            params.validate()
+            params.nondim()
+            
+            # Create case-specific output directory
+            case_dir = os.path.join(output_dir, f"{geometry['name']}_Pe{fixed_pe}_mu{mu}")
+            
+            # Run simulation with these parameters
+            case_results = run_single_sulci_simulation(params, case_dir)
+            
+            # Store key results
+            all_results["varying_mu"][geometry["name"]][mu] = {
+                "params": {
+                    "sulci_height": params.sulci_h_mm,
+                    "sulci_width": params.sulci_width_mm,
+                    "Pe": params.Pe,
+                    "mu": params.mu
+                },
+                "total_mass": float(case_results["total_mass"]),
+                "flow_rate": float(case_results["flow_rate"]) if case_results["flow_rate"] is not None else None
+            }
+    
+    # Generate enhanced comparison charts for both parameter variations
+    compare_results_dual(all_results, output_dir, pe_values, mu_values, fixed_pe, fixed_mu)
+    
+    return all_results
+
+
+def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fixed_mu):
+    """
+    Create bar charts comparing total mass across different sulci geometries,
+    with both Pe and mu variations.
+    
+    Parameters:
+    results : dict
+        Nested dictionary with results for each geometry and parameter variation
+    output_dir : str
+        Directory to save output plots
+    pe_values : list
+        List of Pe values used in the simulations
+    mu_values : list
+        List of mu values used in the simulations
+    fixed_pe : float
+        The fixed Pe value used when varying mu
+    fixed_mu : float
+        The fixed mu value used when varying Pe
+    """
+    # Create comparison directory
+    comparison_dir = os.path.join(output_dir, "comparison")
+    os.makedirs(comparison_dir, exist_ok=True)
+    
+    # Extract geometry names
+    geometries = list(results["varying_pe"].keys())
+    
+    # Format geometry names for display
+    display_names = [name.replace("_", " ").title() for name in geometries]
+    
     # Set font sizes
     plt.rcParams.update({
         'font.size': 13,
@@ -226,55 +322,184 @@ def compare_results(results, output_dir):
         'ytick.labelsize': 13,
         'legend.fontsize': 13,
     })
+    
+    # --------------------------------------------------------
 
-    # Extract data for plotting
-    case_names = list(results.keys())
-    mass_values = [results[case]["total_mass"] for case in case_names]
-    flow_values = [results[case]["flow_rate"] for case in case_names]
+    # Create grouped bar chart for varying Pe (fixed mu)
+    plt.figure(figsize=(14, 8))
     
-    # Create comparison directory
-    comparison_dir = os.path.join(output_dir, "comparison")
-    os.makedirs(comparison_dir, exist_ok=True)
+    # Set bar width and positions
+    num_groups = len(geometries)
+    num_bars = len(pe_values)
+    bar_width = 0.8 / num_bars
     
-    # Format case names for display
-    display_names = [name.replace("_", " ").title() for name in case_names]
+    # Define colors for different Pe values (blue scheme)
+    pe_colors = ['#9CC3E6', '#2E75B6', '#203864']  # Light to dark blue
     
-    # Plot total mass comparison
-    plt.figure(figsize=(12, 6))
-    bars = plt.bar(display_names, mass_values)
-    
-    # Add value labels on top of bars
-    for bar, value in zip(bars, mass_values):
-        plt.text(bar.get_x() + bar.get_width()/2, value + 0.01*max(mass_values), 
-                f"{value:.4f}", ha='center', va='bottom')
-    
-    plt.ylabel("Total Mass")
-    plt.title("Effect of Sulci Geometry on Total Mass")
-    plt.grid(True, axis='y', linestyle='--', alpha=0.7)
-    plt.tight_layout()
-    plt.savefig(os.path.join(comparison_dir, "mass_comparison.png"), dpi=300)
-    plt.close()
+    # Plot bars for each Pe value
+    for i, pe in enumerate(pe_values):
+        # Extract mass values for this Pe across all geometries
+        mass_values = [results["varying_pe"][geom][pe]["total_mass"] for geom in geometries]
         
+        # Calculate x positions for this group of bars
+        x_positions = [j + (i - num_bars/2 + 0.5) * bar_width for j in range(num_groups)]
+        
+        # Create bars
+        bars = plt.bar(x_positions, mass_values, bar_width, 
+                       label=f'Pe = {pe}', color=pe_colors[i % len(pe_colors)])
+        
+        # Add value labels on top of bars
+        for bar, value in zip(bars, mass_values):
+            plt.text(bar.get_x() + bar.get_width()/2, value + 0.01*max(mass_values), 
+                    f"{value:.3f}", ha='center', va='bottom', fontsize=11, rotation=0)
+    
+    # Add labels and legend
+    plt.xlabel("Sulci Geometry")
+    plt.ylabel("Total Mass")
+    plt.title(f"Effect of Sulci Geometry on Total Mass for Different Pe Values (Fixed μ={fixed_mu})")
+    plt.xticks(range(num_groups), display_names)
+    plt.legend(title="Péclet Number")
+    plt.grid(True, axis='y', linestyle='--', alpha=0.7)
+    
+    # Adjust layout
+    plt.tight_layout()
+    
+    # Save the plot
+    plt.savefig(os.path.join(comparison_dir, "mass_comparison_varying_pe.png"), dpi=300)
+    plt.close()
+    
+    # --------------------------------------------------------
+
+    # Create grouped bar chart for varying mu (fixed Pe) 
+    plt.figure(figsize=(14, 8))
+    
+    # Set bar width and positions
+    num_groups = len(geometries)
+    num_bars = len(mu_values)
+    bar_width = 0.8 / num_bars
+    
+    # Define colors for different mu values (green scheme)
+    mu_colors = ['#A8D08D', '#548235', '#385723']  # Light to dark green
+    
+    # Plot bars for each mu value
+    for i, mu in enumerate(mu_values):
+        # Extract mass values for this mu across all geometries
+        mass_values = [results["varying_mu"][geom][mu]["total_mass"] for geom in geometries]
+        
+        # Calculate x positions for this group of bars
+        x_positions = [j + (i - num_bars/2 + 0.5) * bar_width for j in range(num_groups)]
+        
+        # Create bars
+        bars = plt.bar(x_positions, mass_values, bar_width, 
+                       label=f'μ = {mu}', color=mu_colors[i % len(mu_colors)])
+        
+        # Add value labels on top of bars
+        for bar, value in zip(bars, mass_values):
+            plt.text(bar.get_x() + bar.get_width()/2, value + 0.01*max(mass_values), 
+                    f"{value:.3f}", ha='center', va='bottom', fontsize=11, rotation=0)
+    
+    # Add labels and legend
+    plt.xlabel("Sulci Geometry")
+    plt.ylabel("Total Mass")
+    plt.title(f"Effect of Sulci Geometry on Total Mass for Different μ Values (Fixed Pe={fixed_pe})")
+    plt.xticks(range(num_groups), display_names)
+    plt.legend(title="Uptake Parameter (μ)")
+    plt.grid(True, axis='y', linestyle='--', alpha=0.7)
+    
+    # Adjust layout
+    plt.tight_layout()
+    
+    # Save the plot
+    plt.savefig(os.path.join(comparison_dir, "mass_comparison_varying_mu.png"), dpi=300)
+    plt.close()
+    
+    # --------------------------------------------------------
+
+    # Create panel figures for each parameter set 
+    
+    # Panel figure for varying Pe
+    fig1, axes1 = plt.subplots(1, len(pe_values), figsize=(18, 6), sharey=True)
+    
+    for i, pe in enumerate(pe_values):
+        ax = axes1[i]
+        
+        # Extract mass values for this Pe across all geometries
+        mass_values = [results["varying_pe"][geom][pe]["total_mass"] for geom in geometries]
+        
+        # Create bars
+        bars = ax.bar(display_names, mass_values, color=pe_colors[i % len(pe_colors)])
+        
+        # Add value labels
+        for bar, value in zip(bars, mass_values):
+            ax.text(bar.get_x() + bar.get_width()/2, value + 0.01*max(mass_values), 
+                   f"{value:.3f}", ha='center', va='bottom', fontsize=11)
+        
+        # Set title and grid
+        ax.set_title(f'Pe = {pe}')
+        ax.grid(True, axis='y', linestyle='--', alpha=0.7)
+        
+        # Only add y-label to the first subplot
+        if i == 0:
+            ax.set_ylabel("Total Mass")
+    
+    # Set overall title
+    fig1.suptitle(f"Effect of Sulci Geometry on Total Mass for Different Pe Values (Fixed μ={fixed_mu})", fontsize=15)
+    
+    # Adjust layout
+    plt.tight_layout(rect=[0, 0, 1, 0.95])  # Make room for the suptitle
+    
+    # Save the plot
+    plt.savefig(os.path.join(comparison_dir, "mass_comparison_panels_pe.png"), dpi=300)
+    plt.close()
+    
+    # --------------------------------------------------------
+
+    # Panel figure for varying mu
+    fig2, axes2 = plt.subplots(1, len(mu_values), figsize=(18, 6), sharey=True)
+    
+    for i, mu in enumerate(mu_values):
+        ax = axes2[i]
+        
+        # Extract mass values for this mu across all geometries
+        mass_values = [results["varying_mu"][geom][mu]["total_mass"] for geom in geometries]
+        
+        # Create bars
+        bars = ax.bar(display_names, mass_values, color=mu_colors[i % len(mu_colors)])
+        
+        # Add value labels
+        for bar, value in zip(bars, mass_values):
+            ax.text(bar.get_x() + bar.get_width()/2, value + 0.01*max(mass_values), 
+                   f"{value:.3f}", ha='center', va='bottom', fontsize=11)
+        
+        # Set title and grid
+        ax.set_title(f'μ = {mu}')
+        ax.grid(True, axis='y', linestyle='--', alpha=0.7)
+        
+        # Only add y-label to the first subplot
+        if i == 0:
+            ax.set_ylabel("Total Mass")
+    
+    # Set overall title
+    fig2.suptitle(f"Effect of Sulci Geometry on Total Mass for Different μ Values (Fixed Pe={fixed_pe})", fontsize=15)
+    
+    # Adjust layout
+    plt.tight_layout(rect=[0, 0, 1, 0.95])  # Make room for the suptitle
+    
+    # Save the plot
+    plt.savefig(os.path.join(comparison_dir, "mass_comparison_panels_mu.png"), dpi=300)
+    plt.close()
+    
+    # --------------------------------------------------------
+    
     # Save comparison data
     comparison_data = {
-        "cases": case_names,
-        "total_mass": mass_values,
-        "normalised_mass": [m/max(mass_values) if max(mass_values) > 0 else 0.0 for m in mass_values]
+        "geometries": geometries,
+        "pe_values": pe_values,
+        "mu_values": mu_values,
+        "fixed_pe": fixed_pe,
+        "fixed_mu": fixed_mu,
+        "results": results
     }
     
-    with open(os.path.join(comparison_dir, "comparison_data.json"), "w") as f:
+    with open(os.path.join(comparison_dir, "comparison_data_dual.json"), "w") as f:
         json.dump(comparison_data, f, indent=4)
-
-if __name__ == "__main__":
-    import argparse
-    
-    parser = argparse.ArgumentParser(description="Analyse effect of sulci geometry")
-    parser.add_argument("--output-dir", type=str, default="results/sulci_analysis", 
-                        help="Output directory for results")
-    
-    args = parser.parse_args()
-    
-    # Run the analysis
-    results = run_sulci_analysis(args.output_dir)
-    
-    print("\nSulci geometry analysis completed!")
