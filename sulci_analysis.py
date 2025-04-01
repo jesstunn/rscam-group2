@@ -458,7 +458,7 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
     fig1.suptitle(f"Effect of Sulci Geometry on Total Mass for Different Pe Values (Fixed μ={fixed_mu})", fontsize=15)
 
     # Adjust layout
-    plt.tight_layout(rect=[0, 0, 1, 0.95])  # Make room for the suptitle
+    plt.tight_layout(rect=[0, 0.07, 1, 0.95])   
 
     # Save the plot
     plt.savefig(os.path.join(comparison_dir, "mass_comparison_panels_pe.png"), dpi=300)
@@ -501,7 +501,7 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
     fig2.suptitle(f"Effect of Sulci Geometry on Total Mass for Different μ Values (Fixed Pe={fixed_pe})", fontsize=15)
 
     # Adjust layout
-    plt.tight_layout(rect=[0, 0, 1, 0.95])  # Make room for the suptitle
+    plt.tight_layout(rect=[0, 0.07, 1, 0.95]) 
 
     # Save the plot
     plt.savefig(os.path.join(comparison_dir, "mass_comparison_panels_mu.png"), dpi=300)
