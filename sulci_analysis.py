@@ -451,14 +451,12 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
         # Adjust x-tick label size if needed
         ax.tick_params(axis='x', labelsize=11)
 
-    # Add a common x-axis label
-    fig1.text(0.5, 0.01, "Sulci Geometry", ha='center', va='center', fontsize=14)    
-
     # Set overall title
     fig1.suptitle(f"Effect of Sulci Geometry on Total Mass for Different Pe Values (Fixed μ={fixed_mu})", fontsize=15)
 
-    # Adjust layout
-    plt.tight_layout(rect=[0, 0.07, 1, 0.95])   
+    # Adjust layout and add x-label
+    plt.xlabel("Sulci Geometry")
+    plt.tight_layout(rect=[0, 0, 1, 0.95])  
 
     # Save the plot
     plt.savefig(os.path.join(comparison_dir, "mass_comparison_panels_pe.png"), dpi=300)
@@ -494,14 +492,12 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
         # Adjust x-tick label size if needed
         ax.tick_params(axis='x', labelsize=11)
 
-    # Add a common x-axis label
-    fig2.text(0.5, 0.01, "Sulci Geometry", ha='center', va='center', fontsize=14)    
-
     # Set overall title
     fig2.suptitle(f"Effect of Sulci Geometry on Total Mass for Different μ Values (Fixed Pe={fixed_pe})", fontsize=15)
 
-    # Adjust layout
-    plt.tight_layout(rect=[0, 0.07, 1, 0.95]) 
+    # Adjust layout and add x-label
+    plt.xlabel("Sulci Geometry")
+    plt.tight_layout(rect=[0, 0, 1, 0.95]) 
 
     # Save the plot
     plt.savefig(os.path.join(comparison_dir, "mass_comparison_panels_mu.png"), dpi=300)
