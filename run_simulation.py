@@ -195,7 +195,7 @@ def run_mass_parameter_study(output_dir="mass_study_results"):
     """Run a mass analysis parameter study"""
     print("\nRunning mass parameter study...")
     
-    # This will run a series of simulations to analyze how mass depends on Pe and mu
+    # This will run a series of simulations to analyse how mass depends on Pe and mu
     results = run_mass_analysis()
     
     print("Mass parameter study completed!")
@@ -205,7 +205,7 @@ def run_sulci_parameter_study(output_dir="sulci_study_results"):
     """Run a study on the effect of sulci geometry"""
     print("\nRunning sulci geometry parameter study...")
     
-    # This will run a series of simulations to analyze how the shape of the sulci
+    # This will run a series of simulations to analyse how the shape of the sulci
     # affects the simulation
     results = run_sulci_analysis(output_dir)
     

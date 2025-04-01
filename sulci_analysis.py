@@ -254,34 +254,12 @@ def compare_results(results, output_dir):
     plt.tight_layout()
     plt.savefig(os.path.join(comparison_dir, "mass_comparison.png"), dpi=300)
     plt.close()
-    
-    # Plot flow rate comparison
-    if all(flow is not None for flow in flow_values):
-        plt.figure(figsize=(12, 6))
-        bars = plt.bar(display_names, flow_values)
         
-        # Add value labels on top of bars
-        for bar, value in zip(bars, flow_values):
-            plt.text(bar.get_x() + bar.get_width()/2, value + 0.01*max(flow_values) if max(flow_values) > 0 else 0.01, 
-                    f"{value:.4f}", ha='center', va='bottom')
-        
-        plt.ylabel("Flow Rate")
-        plt.title("Effect of Sulci Geometry on Flow Rate")
-        plt.grid(True, axis='y', linestyle='--', alpha=0.7)
-        plt.tight_layout()
-        plt.savefig(os.path.join(comparison_dir, "flow_comparison.png"), dpi=300)
-        plt.close()
-    
-    # Check if flow_values has any non-zero values
-    max_flow = max(flow_values) if flow_values and max(flow_values) > 0 else 1.0
-    
     # Save comparison data
     comparison_data = {
         "cases": case_names,
         "total_mass": mass_values,
-        "flow_rate": flow_values,
-        "normalized_mass": [m/max(mass_values) if max(mass_values) > 0 else 0.0 for m in mass_values],
-        "normalized_flow": [f/max_flow if f is not None else None for f in flow_values]
+        "normalised_mass": [m/max(mass_values) if max(mass_values) > 0 else 0.0 for m in mass_values]
     }
     
     with open(os.path.join(comparison_dir, "comparison_data.json"), "w") as f:
@@ -290,7 +268,7 @@ def compare_results(results, output_dir):
 if __name__ == "__main__":
     import argparse
     
-    parser = argparse.ArgumentParser(description="Analyze effect of sulci geometry")
+    parser = argparse.ArgumentParser(description="Analyse effect of sulci geometry")
     parser.add_argument("--output-dir", type=str, default="results/sulci_analysis", 
                         help="Output directory for results")
     
