@@ -2,6 +2,7 @@
 # Run Simulation Module
 # ========================================================
 
+
 # Import general modules
 from dolfin import *
 import numpy as np
@@ -17,7 +18,21 @@ from mesh import mesh_generator, visualise_mesh
 from stokes import stokes_solver, compute_multiple_flow_rates, visualise_velocity, save_flow_fields
 from adv_diff import advdiff_solver, calculate_total_mass, visualise_concentration, save_concentration_field
 from mass_analysis import run_mass_analysis
-from sulci_analysis import run_sulci_analysis  
+from sulci_analysis import run_sulci_analysis 
+
+# ------------------------------------------
+
+# Set global plot settings
+plt.rcParams.update({
+    'font.size': 13,
+    'axes.titlesize': 13,
+    'axes.labelsize': 13,
+    'xtick.labelsize': 13,
+    'ytick.labelsize': 13,
+    'legend.fontsize': 13,
+})
+
+# --------------------------------------------------------
 
 def run_simulation(params=None, output_dir="simulation_results"):
     """
