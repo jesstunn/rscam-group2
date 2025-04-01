@@ -218,6 +218,16 @@ def visualise_velocity(u, mesh, filename="visuals/velocity.png"):
     filename : str, optional
         Path to save the visualisation (default: "visuals/velocity.png")
     """
+
+    # Set font sizes
+    plt.rcParams.update({
+        'font.size': 13,
+        'axes.titlesize': 13,
+        'axes.labelsize': 13,
+        'xtick.labelsize': 13,
+        'ytick.labelsize': 13,
+        'legend.fontsize': 13,
+    })
     
     # Create directory if it doesn't exist
     os.makedirs(os.path.dirname(filename), exist_ok=True)

@@ -216,6 +216,17 @@ def run_sulci_analysis(output_dir="sulci_results"):
     return results
 
 def compare_results(results, output_dir):
+
+    # Set font sizes
+    plt.rcParams.update({
+        'font.size': 13,
+        'axes.titlesize': 13,
+        'axes.labelsize': 13,
+        'xtick.labelsize': 13,
+        'ytick.labelsize': 13,
+        'legend.fontsize': 13,
+    })
+
     # Extract data for plotting
     case_names = list(results.keys())
     mass_values = [results[case]["total_mass"] for case in case_names]

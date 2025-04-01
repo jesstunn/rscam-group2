@@ -186,6 +186,16 @@ def visualise_mesh(mesh_data, filename="mesh.png"):
     """
     import matplotlib.pyplot as plt
     import os
+
+    # Set font sizes
+    plt.rcParams.update({
+        'font.size': 13,
+        'axes.titlesize': 13,
+        'axes.labelsize': 13,
+        'xtick.labelsize': 13,
+        'ytick.labelsize': 13,
+        'legend.fontsize': 13,
+    })
         
     # Extract mesh from input
     if isinstance(mesh_data, dict) and "mesh" in mesh_data:

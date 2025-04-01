@@ -172,6 +172,17 @@ def plot_mass_results(results, x_param, y_param=None, log_scale=True):
     log_scale : bool, optional
         Whether to use log scale for axes
     """
+    # Set font sizes for the plots
+    plt.rcParams.update({
+        'font.size': 13,
+        'axes.titlesize': 13,
+        'axes.labelsize': 13,
+        'xtick.labelsize': 13,
+        'ytick.labelsize': 13,
+        'legend.fontsize': 13,
+    })
+    
+
     # Create plots directory if it doesn't exist
     os.makedirs('mass_results', exist_ok=True)
     
