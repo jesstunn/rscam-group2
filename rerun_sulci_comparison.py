@@ -74,4 +74,4 @@ if __name__ == "__main__":
 
 
 # Use this in terminal to run:
-# python rerun_sulci_comparison.py --json-file=sulci_study_results/comparison/comparison_data_dual.json --output-dir=new_plots
+# python3 rerun_sulci_comparison.py --json-file=sulci_study_results/comparison/comparison_data_dual.json --output-dir=new_plots
