@@ -415,24 +415,31 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
     
     # --------------------------------------------------------
 
-    # Create panel figures for each parameter set 
-    
+    # Create simplified numbered labels and label mapping
+    numbered_labels = ["1", "2", "3", "4"]
+    label_mapping = {
+        "1": "Small Height, Small Width",
+        "2": "Small Height, Large Width",
+        "3": "Large Height, Small Width", 
+        "4": "Large Height, Large Width"
+    }
+
     # Panel figure for varying Pe
     fig1, axes1 = plt.subplots(1, len(pe_values), figsize=(18, 6), sharey=True)
-    
+
     for i, pe in enumerate(pe_values):
         ax = axes1[i]
         
         # Extract mass values for this Pe across all geometries
         mass_values = [results["varying_pe"][geom][pe]["total_mass"] for geom in geometries]
         
-        # Create bars
-        bars = ax.bar(display_names, mass_values, color=pe_colors[i % len(pe_colors)])
+        # Create bars with numbered labels
+        bars = ax.bar(numbered_labels, mass_values, color=pe_colors[i % len(pe_colors)])
         
         # Add value labels
         for bar, value in zip(bars, mass_values):
             ax.text(bar.get_x() + bar.get_width()/2, value + 0.01*max(mass_values), 
-                   f"{value:.3f}", ha='center', va='bottom', fontsize=11)
+                f"{value:.3f}", ha='center', va='bottom', fontsize=11)
         
         # Set title and grid
         ax.set_title(f'Pe = {pe}')
@@ -441,35 +448,41 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
         # Only add y-label to the first subplot
         if i == 0:
             ax.set_ylabel("Total Mass")
-    
+
+    # Add a text box with label explanations
+    fig1.text(0.15, 0.03, 
+            "\n".join([f"{num} = {desc}" for num, desc in label_mapping.items()]),
+            fontsize=12, 
+            bbox=dict(facecolor='white', alpha=0.7, boxstyle='round,pad=0.5'))
+
     # Set overall title
     fig1.suptitle(f"Effect of Sulci Geometry on Total Mass for Different Pe Values (Fixed μ={fixed_mu})", fontsize=15)
-    
+
     # Adjust layout
-    plt.tight_layout(rect=[0, 0, 1, 0.95])  # Make room for the suptitle
-    
+    plt.tight_layout(rect=[0, 0, 1, 0.93])  # Make room for the suptitle and legend
+
     # Save the plot
     plt.savefig(os.path.join(comparison_dir, "mass_comparison_panels_pe.png"), dpi=300)
     plt.close()
-    
-    # --------------------------------------------------------
 
+    # --------------------------------------------------------
+    
     # Panel figure for varying mu
     fig2, axes2 = plt.subplots(1, len(mu_values), figsize=(18, 6), sharey=True)
-    
+
     for i, mu in enumerate(mu_values):
         ax = axes2[i]
         
         # Extract mass values for this mu across all geometries
         mass_values = [results["varying_mu"][geom][mu]["total_mass"] for geom in geometries]
         
-        # Create bars
-        bars = ax.bar(display_names, mass_values, color=mu_colors[i % len(mu_colors)])
+        # Create bars with numbered labels
+        bars = ax.bar(numbered_labels, mass_values, color=mu_colors[i % len(mu_colors)])
         
         # Add value labels
         for bar, value in zip(bars, mass_values):
             ax.text(bar.get_x() + bar.get_width()/2, value + 0.01*max(mass_values), 
-                   f"{value:.3f}", ha='center', va='bottom', fontsize=11)
+                f"{value:.3f}", ha='center', va='bottom', fontsize=11)
         
         # Set title and grid
         ax.set_title(f'μ = {mu}')
@@ -478,13 +491,19 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
         # Only add y-label to the first subplot
         if i == 0:
             ax.set_ylabel("Total Mass")
-    
+
+    # Add a text box with label explanations
+    fig2.text(0.15, 0.03, 
+            "\n".join([f"{num} = {desc}" for num, desc in label_mapping.items()]),
+            fontsize=12, 
+            bbox=dict(facecolor='white', alpha=0.7, boxstyle='round,pad=0.5'))
+
     # Set overall title
     fig2.suptitle(f"Effect of Sulci Geometry on Total Mass for Different μ Values (Fixed Pe={fixed_pe})", fontsize=15)
-    
+
     # Adjust layout
-    plt.tight_layout(rect=[0, 0, 1, 0.95])  # Make room for the suptitle
-    
+    plt.tight_layout(rect=[0, 0, 1, 0.93])  # Make room for the suptitle and legend
+
     # Save the plot
     plt.savefig(os.path.join(comparison_dir, "mass_comparison_panels_mu.png"), dpi=300)
     plt.close()
