@@ -309,16 +309,16 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
     
     # Extract geometry names
     geometries = list(results["varying_pe"].keys())
-    
+
     # Format geometry names for display with h and l in italics
     display_names = []
-    for geom in geometries:
-        if geom["height"] == small_height:
+    for geom_name in geometries:
+        if "small_height" in geom_name:
             height_str = "Small $h$"
         else:
             height_str = "Large $h$"
             
-        if geom["width"] == small_width:
+        if "small_width" in geom_name:
             width_str = "small $l$"
         else:
             width_str = "large $l$"
