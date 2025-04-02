@@ -310,24 +310,37 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
     # Extract geometry names
     geometries = list(results["varying_pe"].keys())
     
-    # Format geometry names for display
-    display_names = [name.replace("_", " ").title() for name in geometries]
+    # Format geometry names for display with h and l in italics
+    display_names = []
+    for geom in geometries:
+        if geom["height"] == small_height:
+            height_str = "Small $h$"
+        else:
+            height_str = "Large $h$"
+            
+        if geom["width"] == small_width:
+            width_str = "small $l$"
+        else:
+            width_str = "large $l$"
+        
+        display_names.append(f"{height_str}, {width_str}")
     
     # Set font sizes
     plt.rcParams.update({
-        'font.size': 14,
-        'axes.titlesize': 18,
+        'font.size': 16,
+        'axes.titlesize': 22,
         'axes.labelsize': 16,
-        'xtick.labelsize': 14,
-        'ytick.labelsize': 14,
+        'xtick.labelsize': 20,
+        'ytick.labelsize': 20,
         'legend.fontsize': 14,
     })
     
+
     # --------------------------------------------------------
 
     # Create grouped bar chart for varying Pe (fixed mu)
     plt.figure(figsize=(14, 8))
-    
+
     # Set bar width and positions
     num_groups = len(geometries)
     num_bars = len(pe_values)
@@ -369,6 +382,16 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
     plt.close()
     
     # --------------------------------------------------------
+
+    # Set font sizes
+    plt.rcParams.update({
+        'font.size': 16,
+        'axes.titlesize': 22,
+        'axes.labelsize': 16,
+        'xtick.labelsize': 20,
+        'ytick.labelsize': 20,
+        'legend.fontsize': 14,
+    })
 
     # Create grouped bar chart for varying mu (fixed Pe) 
     plt.figure(figsize=(14, 8))
