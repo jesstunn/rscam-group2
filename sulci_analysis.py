@@ -368,7 +368,7 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
     # Add labels and legend
     plt.xlabel("Sulci Geometry", fontsize=20)
     plt.ylabel("Average mass", fontsize=20)
-    plt.title(f"Effect of Sulci Geometry on average mass for Different Pe Values (Fixed μ={fixed_mu})")
+    plt.title(f"Effect of Sulci Geometry on Average Mass for Different Pe Values (Fixed μ={fixed_mu})")
     plt.xticks(range(num_groups), display_names)
     plt.legend(title="Péclet Number")
     plt.grid(True, axis='y', linestyle='--', alpha=0.7)
@@ -423,7 +423,7 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
     # Add labels and legend
     plt.xlabel("Sulci Geometry", fontsize=20)
     plt.ylabel("Average mass", fontsize=20)
-    plt.title(f"Effect of Sulci Geometry on average mass for Different μ Values (Fixed Pe={fixed_pe})")
+    plt.title(f"Effect of Sulci Geometry on Average Mass for Different μ Values (Fixed Pe={fixed_pe})")
     plt.xticks(range(num_groups), display_names)
     plt.legend(title="Uptake (μ)")
     plt.grid(True, axis='y', linestyle='--', alpha=0.7)
