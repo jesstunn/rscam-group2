@@ -82,31 +82,6 @@ def advdiff_solver(mesh, left, right, bottom,
 
     return c_sol
 
-def calculate_total_mass(c, mesh):
-    """
-    Calculate the total mass of solute in the domain by integrating
-    the concentration field over the entire domain.
-    
-    Parameters:
-    -----------
-    c : dolfin.Function
-        Concentration field
-    mesh : dolfin.Mesh
-        Mesh on which c is defined
-        
-    Returns:
-    --------
-    float
-        Total mass of solute in the domain
-    """
-    # Define measure for integration over the domain
-    dx = Measure("dx", domain=mesh)
-    
-    # Compute the double integral of c over the domain
-    total_mass = assemble(c*dx)
-    
-    return total_mass
-
 def compute_uptake_flux(c, mesh, bottom, D, mu):
     """
     Compute the total uptake flux through the bottom boundary.
