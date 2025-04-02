@@ -42,6 +42,36 @@ def calculate_total_mass(c, mesh):
     
     return total_mass
 
+def calculate_average_mass(c, mesh):
+    """
+    Calculate the average massof solute in the domain by integrating 
+    the concentration field over the entire domain and dividing by 
+    the domain volume.
+    
+    Parameters:
+    c : dolfin.Function
+        Concentration field
+    mesh : dolfin.Mesh
+        Mesh on which c is defined
+        
+    Returns:
+    float
+        Average mass (concentration) of solute in the domain
+    """
+    # Define measure for integration over the domain
+    dx = Measure("dx", domain=mesh)
+    
+    # Compute the integral of c over the domain
+    total_mass = assemble(c*dx)
+    
+    # Compute the domain volume
+    domain_volume = assemble(Constant(1.0)*dx)
+    
+    # Compute the average mass (concentration)
+    average_mass = total_mass / domain_volume
+    
+    return average_mass
+    
 def parameter_sweep_mass(params_range, fixed_params=None, save_fields=True):
     """
     Perform a parameter sweep to compute total mass for different parameter values.
@@ -134,7 +164,7 @@ def parameter_sweep_mass(params_range, fixed_params=None, save_fields=True):
         )
         
         # Calculate total mass
-        total_mass = calculate_total_mass(c, mesh)
+        total_mass = calculate_average_mass(c, mesh)
         
         # Store parameters and results
         param_dict = {param: value for param, value in zip(param_names, values)}
