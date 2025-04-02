@@ -217,14 +217,14 @@ def visualise_concentration(c, mesh, filename="visuals/concentration.png"):
     import matplotlib.pyplot as plt
     import os
 
-    # Set font sizes for the plot
+    # Set font sizes for plot
     plt.rcParams.update({
-        'font.size': 13,
-        'axes.titlesize': 13,
-        'axes.labelsize': 13,
-        'xtick.labelsize': 13,
-        'ytick.labelsize': 13,
-        'legend.fontsize': 13,
+        'font.size': 14,
+        'axes.titlesize': 18,
+        'axes.labelsize': 16,
+        'xtick.labelsize': 14,
+        'ytick.labelsize': 14,
+        'legend.fontsize': 14,
     })
     
     # Create directory if it doesn't exist
@@ -262,14 +262,14 @@ def plot_concentration_profiles(c, mesh, num_profiles=5, filename="visuals/conce
     import numpy as np
     import os
 
-    # Set font sizes for the plot
+    # Set font sizes
     plt.rcParams.update({
-        'font.size': 13,
-        'axes.titlesize': 13,
-        'axes.labelsize': 13,
-        'xtick.labelsize': 13,
-        'ytick.labelsize': 13,
-        'legend.fontsize': 13,
+        'font.size': 14,
+        'axes.titlesize': 18,
+        'axes.labelsize': 16,
+        'xtick.labelsize': 14,
+        'ytick.labelsize': 14,
+        'legend.fontsize': 14,
     })
     
     # Create directory if it doesn't exist
