@@ -330,12 +330,11 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
         'font.size': 16,
         'axes.titlesize': 22,
         'axes.labelsize': 16,
-        'xtick.labelsize': 20,
-        'ytick.labelsize': 20,
+        'xtick.labelsize': 18,
+        'ytick.labelsize': 18,
         'legend.fontsize': 14,
     })
     
-
     # --------------------------------------------------------
 
     # Create grouped bar chart for varying Pe (fixed mu)
@@ -367,8 +366,8 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
                     f"{value:.3f}", ha='center', va='bottom', rotation=0)
     
     # Add labels and legend
-    plt.xlabel("Sulci Geometry")
-    plt.ylabel("Average mass")
+    plt.xlabel("Sulci Geometry", fontsize=20)
+    plt.ylabel("Average mass", fontsize=20)
     plt.title(f"Effect of Sulci Geometry on average mass for Different Pe Values (Fixed μ={fixed_mu})")
     plt.xticks(range(num_groups), display_names)
     plt.legend(title="Péclet Number")
@@ -388,8 +387,8 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
         'font.size': 16,
         'axes.titlesize': 22,
         'axes.labelsize': 16,
-        'xtick.labelsize': 20,
-        'ytick.labelsize': 20,
+        'xtick.labelsize': 18,
+        'ytick.labelsize': 18,
         'legend.fontsize': 14,
     })
 
@@ -422,8 +421,8 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
                     f"{value:.3f}", ha='center', va='bottom', rotation=0)
     
     # Add labels and legend
-    plt.xlabel("Sulci Geometry")
-    plt.ylabel("Average mass")
+    plt.xlabel("Sulci Geometry", fontsize=20)
+    plt.ylabel("Average mass", fontsize=20)
     plt.title(f"Effect of Sulci Geometry on average mass for Different μ Values (Fixed Pe={fixed_pe})")
     plt.xticks(range(num_groups), display_names)
     plt.legend(title="Uptake Parameter (μ)")

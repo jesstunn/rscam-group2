@@ -99,4 +99,4 @@ if __name__ == "__main__":
     rerun_sulci_comparison(args.json_file, args.output_dir)
 
 # Use this in terminal to run:
-# python3 rerun_sulci_comparison.py --json-file=sulci_study_results/comparison/comparison_data_dual.json --output-dir=sulci_study_results/comparison
+# python3 rerun_sulci_comparison.py --json-file=sulci_study_results/comparison/comparison_data_dual.json --output-dir=sulci_study_results
