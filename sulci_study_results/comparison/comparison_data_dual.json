@@ -160,7 +160,7 @@
                     "total_mass": 0.9111823619794344,
                     "flow_rate": 0.752693228259726
                 },
-                "1.0": {
+                "1": {
                     "params": {
                         "sulci_height": 0.5,
                         "sulci_width": 0.5,
@@ -170,7 +170,7 @@
                     "total_mass": 0.5892290914610159,
                     "flow_rate": 0.752693228259726
                 },
-                "10.0": {
+                "10": {
                     "params": {
                         "sulci_height": 0.5,
                         "sulci_width": 0.5,
@@ -192,7 +192,7 @@
                     "total_mass": 0.9140712056696884,
                     "flow_rate": 0.7525219647824684
                 },
-                "1.0": {
+                "1": {
                     "params": {
                         "sulci_height": 0.5,
                         "sulci_width": 2.0,
@@ -202,7 +202,7 @@
                     "total_mass": 0.5931390089501344,
                     "flow_rate": 0.7525219647824684
                 },
-                "10.0": {
+                "10": {
                     "params": {
                         "sulci_height": 0.5,
                         "sulci_width": 2.0,
@@ -224,7 +224,7 @@
                     "total_mass": 0.8840266468082617,
                     "flow_rate": 0.7526980598143288
                 },
-                "1.0": {
+                "1": {
                     "params": {
                         "sulci_height": 2.0,
                         "sulci_width": 0.5,
@@ -234,7 +234,7 @@
                     "total_mass": 0.5633948290498071,
                     "flow_rate": 0.7526980598143288
                 },
-                "10.0": {
+                "10": {
                     "params": {
                         "sulci_height": 2.0,
                         "sulci_width": 0.5,
@@ -256,7 +256,7 @@
                     "total_mass": 0.8816946170373853,
                     "flow_rate": 0.5375590625309564
                 },
-                "1.0": {
+                "1": {
                     "params": {
                         "sulci_height": 2.0,
                         "sulci_width": 2.0,
@@ -266,7 +266,7 @@
                     "total_mass": 0.5370451133189662,
                     "flow_rate": 0.5375590625309564
                 },
-                "10.0": {
+                "10": {
                     "params": {
                         "sulci_height": 2.0,
                         "sulci_width": 2.0,

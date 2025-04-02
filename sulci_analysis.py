@@ -425,7 +425,7 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
     plt.ylabel("Average mass", fontsize=20)
     plt.title(f"Effect of Sulci Geometry on average mass for Different μ Values (Fixed Pe={fixed_pe})")
     plt.xticks(range(num_groups), display_names)
-    plt.legend(title="Uptake Parameter (μ)")
+    plt.legend(title="Uptake (μ)")
     plt.grid(True, axis='y', linestyle='--', alpha=0.7)
     
     # Adjust layout
