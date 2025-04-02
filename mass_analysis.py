@@ -19,7 +19,7 @@ from adv_diff import advdiff_solver, calculate_average_mass
    
 def parameter_sweep_mass(params_range, fixed_params=None, save_fields=True):
     """
-    Perform a parameter sweep to compute total mass for different parameter values.
+    Perform a parameter sweep to compute average mass for different parameter values.
     
     Parameters:
     -----------
@@ -34,7 +34,7 @@ def parameter_sweep_mass(params_range, fixed_params=None, save_fields=True):
     Returns:
     --------
     dict
-        Dictionary with parameter combinations and corresponding total mass values
+        Dictionary with parameter combinations and corresponding average mass values
     """
     if fixed_params is None:
         fixed_params = {}
@@ -109,7 +109,7 @@ def parameter_sweep_mass(params_range, fixed_params=None, save_fields=True):
             mu=Constant(current_params.mu)
         )
         
-        # Calculate total mass
+        # Calculate average mass
         total_mass = calculate_average_mass(c, mesh)
         
         # Store parameters and results
@@ -131,7 +131,7 @@ def parameter_sweep_mass(params_range, fixed_params=None, save_fields=True):
             File(os.path.join(param_dir, "concentration.pvd")) << c
         
         # Print progress
-        print(f"Parameters: {param_dict}, Total Mass: {total_mass}")
+        print(f"Parameters: {param_dict}, Average mass: {total_mass}")
     
     return results
 
@@ -186,16 +186,16 @@ def plot_mass_results(results, x_param, y_param=None, log_scale=True):
             plt.plot(x_values, y_values, 'o-')
         
         plt.xlabel(f'{x_param}')
-        plt.ylabel('Total Mass')
+        plt.ylabel('Average mass')
         plt.grid(True)
-        plt.title(f'Total Mass vs {x_param}')
+        plt.title(f'Average mass vs {x_param}')
         
         # Save plot
         plt.savefig(f'mass_results/mass_vs_{x_param}.png', dpi=300)
         plt.close()
         
     else:
-        
+
         # 2D plot (heatmap)
         # Get unique values for both parameters
         x_values = sorted(set(p[x_param] for p in params))
@@ -224,8 +224,8 @@ def plot_mass_results(results, x_param, y_param=None, log_scale=True):
         
         plt.xlabel(x_param)
         plt.ylabel(y_param)
-        plt.colorbar(label='Total Mass')
-        plt.title(f'Total Mass as a function of {x_param} and {y_param}')
+        plt.colorbar(label='Average mass')
+        plt.title(f'Average mass as a function of {x_param} and {y_param}')
         
         # Save plot
         plt.savefig(f'mass_results/mass_heatmap_{x_param}_{y_param}.png', dpi=300)
@@ -233,7 +233,7 @@ def plot_mass_results(results, x_param, y_param=None, log_scale=True):
 
 def run_mass_analysis():
     """
-    Run a comprehensive analysis of how total mass depends on Pe and mu.
+    Run a comprehensive analysis of how average mass depends on Pe and mu.
     """
     # 1. Single parameter sweeps
     

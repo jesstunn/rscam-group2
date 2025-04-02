@@ -65,7 +65,7 @@ python3 run_simulation.py --output-dir custom_results
 
 ### Mass Analysis Study
 
-To run a comprehensive analysis of how total mass depends on Peclet number and uptake parameter:
+To run a comprehensive analysis of how average mass depends on Peclet number and uptake parameter:
 
 ```bash
 python3 run_simulation.py --mass_study

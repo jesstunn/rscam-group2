@@ -146,7 +146,7 @@ def run_simulation(params=None, output_dir="simulation_results"):
     
     # Print summary
     print("\nSimulation Results:")
-    print("  Total mass: {:.6f}".format(total_mass))
+    print("  Average mass: {:.6f}".format(total_mass))
     if flow_rate is not None:
         print("  Flow rate: {:.6f}".format(flow_rate))
     print("  Peclet number: {:.2f}".format(params.Pe))

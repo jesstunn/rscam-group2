@@ -119,7 +119,7 @@ def run_single_sulci_simulation(params, output_dir):
     
     # Print summary
     print("\nSimulation Results:")
-    print(f"  Total mass: {total_mass:.6f}")
+    print(f"  Average mass: {total_mass:.6f}")
     if flow_rate is not None:
         print(f"  Flow rate: {flow_rate:.6f}")
     print(f"  Péclet number: {params.Pe:.2f}")
@@ -286,7 +286,7 @@ def run_sulci_analysis(output_dir="sulci_results"):
 
 def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fixed_mu):
     """
-    Create bar charts comparing total mass across different sulci geometries,
+    Create bar charts comparing average mass across different sulci geometries,
     with both Pe and mu variations.
     
     Parameters:
@@ -355,8 +355,8 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
     
     # Add labels and legend
     plt.xlabel("Sulci Geometry")
-    plt.ylabel("Total Mass")
-    plt.title(f"Effect of Sulci Geometry on Total Mass for Different Pe Values (Fixed μ={fixed_mu})")
+    plt.ylabel("Average mass")
+    plt.title(f"Effect of Sulci Geometry on average mass for Different Pe Values (Fixed μ={fixed_mu})")
     plt.xticks(range(num_groups), display_names)
     plt.legend(title="Péclet Number")
     plt.grid(True, axis='y', linestyle='--', alpha=0.7)
@@ -400,8 +400,8 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
     
     # Add labels and legend
     plt.xlabel("Sulci Geometry")
-    plt.ylabel("Total Mass")
-    plt.title(f"Effect of Sulci Geometry on Total Mass for Different μ Values (Fixed Pe={fixed_pe})")
+    plt.ylabel("Average mass")
+    plt.title(f"Effect of Sulci Geometry on average mass for Different μ Values (Fixed Pe={fixed_pe})")
     plt.xticks(range(num_groups), display_names)
     plt.legend(title="Uptake Parameter (μ)")
     plt.grid(True, axis='y', linestyle='--', alpha=0.7)
@@ -446,13 +446,13 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
         
         # Only add y-label to the first subplot
         if i == 0:
-            ax.set_ylabel("Total Mass")
+            ax.set_ylabel("Average mass")
         
         # Adjust x-tick label size if needed
         ax.tick_params(axis='x', labelsize=11)
 
     # Set overall title
-    fig1.suptitle(f"Effect of Sulci Geometry on Total Mass for Different Pe Values (Fixed μ={fixed_mu})")
+    fig1.suptitle(f"Effect of Sulci Geometry on average mass for Different Pe Values (Fixed μ={fixed_mu})")
 
     # Adjust layout and add x-label
     plt.xlabel("Sulci Geometry")
@@ -487,13 +487,13 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
         
         # Only add y-label to the first subplot
         if i == 0:
-            ax.set_ylabel("Total Mass")
+            ax.set_ylabel("Average mass")
         
         # Adjust x-tick label size if needed
         ax.tick_params(axis='x', labelsize=11)
 
     # Set overall title
-    fig2.suptitle(f"Effect of Sulci Geometry on Total Mass for Different μ Values (Fixed Pe={fixed_pe})")
+    fig2.suptitle(f"Effect of Sulci Geometry on average mass for Different μ Values (Fixed Pe={fixed_pe})")
 
     # Adjust layout and add x-label
     plt.xlabel("Sulci Geometry")
