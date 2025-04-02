@@ -16,7 +16,7 @@ from copy import deepcopy
 from parameters import Parameters
 from mesh import mesh_generator, visualise_mesh
 from stokes import stokes_solver, compute_multiple_flow_rates, visualise_velocity, save_flow_fields
-from adv_diff import advdiff_solver, calculate_total_mass, visualise_concentration, save_concentration_field
+from adv_diff import advdiff_solver, calculate_total_mass, calculate_average_mass, visualise_concentration, save_concentration_field
 
 def run_single_sulci_simulation(params, output_dir):
     """
@@ -103,7 +103,7 @@ def run_single_sulci_simulation(params, output_dir):
     print("5. Post-processing results...")
     
     # Calculate mass
-    total_mass = calculate_total_mass(c, mesh)
+    total_mass = calculate_average_mass(c, mesh)
     
     # Calculate flow rate
     try:
