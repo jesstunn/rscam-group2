@@ -20,18 +20,6 @@ from adv_diff import advdiff_solver, calculate_average_mass, visualise_concentra
 from mass_analysis import run_mass_analysis
 from sulci_analysis import run_sulci_analysis 
 
-# ------------------------------------------
-
-# Set global plot settings
-plt.rcParams.update({
-    'font.size': 13,
-    'axes.titlesize': 13,
-    'axes.labelsize': 13,
-    'xtick.labelsize': 13,
-    'ytick.labelsize': 13,
-    'legend.fontsize': 13,
-})
-
 # --------------------------------------------------------
 
 def run_simulation(params=None, output_dir="simulation_results"):

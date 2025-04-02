@@ -2,8 +2,7 @@
 # Mass Analysis Module
 # ========================================================
 
-# Mass analysis function
-
+# Import general moduels
 from dolfin import *
 import numpy as np
 import matplotlib.pyplot as plt
@@ -12,7 +11,7 @@ import os
 from copy import deepcopy
 from mpl_toolkits.mplot3d import Axes3D  
 
-# Import other modules
+# Import our modules
 from parameters import Parameters
 from mesh import mesh_generator
 from stokes import stokes_solver
@@ -54,6 +53,7 @@ def parameter_sweep_mass(params_range, fixed_params=None, save_fields=True):
     
     # For all parameter combinations
     for values in itertools.product(*param_values):
+
         # Create parameter set for this run
         current_params = Parameters()
         
@@ -119,6 +119,7 @@ def parameter_sweep_mass(params_range, fixed_params=None, save_fields=True):
         
         # Save fields for ParaView if requested
         if save_fields:
+
             # Create parameter-specific directory name
             param_str = '_'.join([f"{k}_{v}" for k, v in param_dict.items()])
             param_dir = os.path.join(paraview_dir, param_str)
@@ -150,15 +151,14 @@ def plot_mass_results(results, x_param, y_param=None, log_scale=True):
     """
     # Set font sizes for the plots
     plt.rcParams.update({
-        'font.size': 13,
-        'axes.titlesize': 13,
-        'axes.labelsize': 13,
-        'xtick.labelsize': 13,
-        'ytick.labelsize': 13,
-        'legend.fontsize': 13,
+        'font.size': 14,
+        'axes.titlesize': 18,
+        'axes.labelsize': 16,
+        'xtick.labelsize': 14,
+        'ytick.labelsize': 14,
+        'legend.fontsize': 14,
     })
     
-
     # Create plots directory if it doesn't exist
     os.makedirs('mass_results', exist_ok=True)
     
@@ -195,6 +195,7 @@ def plot_mass_results(results, x_param, y_param=None, log_scale=True):
         plt.close()
         
     else:
+        
         # 2D plot (heatmap)
         # Get unique values for both parameters
         x_values = sorted(set(p[x_param] for p in params))

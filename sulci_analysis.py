@@ -315,12 +315,12 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
     
     # Set font sizes
     plt.rcParams.update({
-        'font.size': 13,
-        'axes.titlesize': 13,
-        'axes.labelsize': 13,
-        'xtick.labelsize': 13,
-        'ytick.labelsize': 13,
-        'legend.fontsize': 13,
+        'font.size': 14,
+        'axes.titlesize': 18,
+        'axes.labelsize': 16,
+        'xtick.labelsize': 14,
+        'ytick.labelsize': 14,
+        'legend.fontsize': 14,
     })
     
     # --------------------------------------------------------
@@ -351,7 +351,7 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
         # Add value labels on top of bars
         for bar, value in zip(bars, mass_values):
             plt.text(bar.get_x() + bar.get_width()/2, value + 0.01*max(mass_values), 
-                    f"{value:.3f}", ha='center', va='bottom', fontsize=11, rotation=0)
+                    f"{value:.3f}", ha='center', va='bottom', rotation=0)
     
     # Add labels and legend
     plt.xlabel("Sulci Geometry")
@@ -396,7 +396,7 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
         # Add value labels on top of bars
         for bar, value in zip(bars, mass_values):
             plt.text(bar.get_x() + bar.get_width()/2, value + 0.01*max(mass_values), 
-                    f"{value:.3f}", ha='center', va='bottom', fontsize=11, rotation=0)
+                    f"{value:.3f}", ha='center', va='bottom', rotation=0)
     
     # Add labels and legend
     plt.xlabel("Sulci Geometry")
@@ -438,7 +438,7 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
         # Add value labels
         for bar, value in zip(bars, mass_values):
             ax.text(bar.get_x() + bar.get_width()/2, value + 0.01*max(mass_values), 
-                f"{value:.3f}", ha='center', va='bottom', fontsize=11)
+                f"{value:.3f}", ha='center', va='bottom')
         
         # Set title and grid
         ax.set_title(f'Pe = {pe}')
@@ -452,7 +452,7 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
         ax.tick_params(axis='x', labelsize=11)
 
     # Set overall title
-    fig1.suptitle(f"Effect of Sulci Geometry on Total Mass for Different Pe Values (Fixed μ={fixed_mu})", fontsize=15)
+    fig1.suptitle(f"Effect of Sulci Geometry on Total Mass for Different Pe Values (Fixed μ={fixed_mu})")
 
     # Adjust layout and add x-label
     plt.xlabel("Sulci Geometry")
@@ -479,7 +479,7 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
         # Add value labels
         for bar, value in zip(bars, mass_values):
             ax.text(bar.get_x() + bar.get_width()/2, value + 0.01*max(mass_values), 
-                f"{value:.3f}", ha='center', va='bottom', fontsize=11)
+                f"{value:.3f}", ha='center', va='bottom')
         
         # Set title and grid
         ax.set_title(f'μ = {mu}')
@@ -493,7 +493,7 @@ def compare_results_dual(results, output_dir, pe_values, mu_values, fixed_pe, fi
         ax.tick_params(axis='x', labelsize=11)
 
     # Set overall title
-    fig2.suptitle(f"Effect of Sulci Geometry on Total Mass for Different μ Values (Fixed Pe={fixed_pe})", fontsize=15)
+    fig2.suptitle(f"Effect of Sulci Geometry on Total Mass for Different μ Values (Fixed Pe={fixed_pe})")
 
     # Adjust layout and add x-label
     plt.xlabel("Sulci Geometry")

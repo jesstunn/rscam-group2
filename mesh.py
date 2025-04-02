@@ -189,12 +189,12 @@ def visualise_mesh(mesh_data, filename="mesh.png"):
 
     # Set font sizes
     plt.rcParams.update({
-        'font.size': 13,
-        'axes.titlesize': 13,
-        'axes.labelsize': 13,
-        'xtick.labelsize': 13,
-        'ytick.labelsize': 13,
-        'legend.fontsize': 13,
+        'font.size': 14,
+        'axes.titlesize': 18,
+        'axes.labelsize': 16,
+        'xtick.labelsize': 14,
+        'ytick.labelsize': 14,
+        'legend.fontsize': 14,
     })
         
     # Extract mesh from input
