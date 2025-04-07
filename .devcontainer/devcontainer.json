@@ -1,6 +1,6 @@
 {
   "name": "FEniCS with Docker",
-  "image": "image": "dolfinx/dolfinx:stable",
+  "image": "quay.io/fenicsproject/stable:latest",
   "remoteUser": "fenics",
   "customizations": {
     "vscode": {
@@ -20,7 +20,6 @@
       "onAutoForward": "openBrowser"
     }
   },
-  
   "runArgs": ["--ipc=host"],
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/${localWorkspaceFolderBasename},type=bind,consistency=cached",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
