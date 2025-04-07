@@ -1,6 +1,6 @@
 {
   "name": "FEniCS with Docker",
-  "image": "quay.io/fenicsproject/stable:latest",
+  "image": "image": "dolfinx/dolfinx:stable",
   "remoteUser": "fenics",
   "customizations": {
     "vscode": {
