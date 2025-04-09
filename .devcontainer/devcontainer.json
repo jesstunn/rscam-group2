@@ -12,9 +12,22 @@
         "ms-toolsai.jupyter"
       ],
       "settings": {
-        "python.terminal.activateEnvironment": true
+        "python.terminal.activateEnvironment": true,
+        "remote.downloadExtensionsFromMarketplace": true
+      },
+      "userSettings": {
+        "update.channel": "none",
+        "workbench.colorTheme": "Default Dark+",
+        "extensions.autoUpdate": false,
+        "extensions.autoCheckUpdates": false
       }
+    },
+    "codespaces": {
+      "openFiles": []
     }
+  },
+  "hostRequirements": {
+    "vsCodeVersion": "1.85"
   },
   "forwardPorts": [8888],
   "portsAttributes": {
