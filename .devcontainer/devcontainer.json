@@ -1,32 +1,18 @@
 {
-  "name": "FEniCS with Docker",
+  "name": "Simple FEniCS",
   "image": "quay.io/fenicsproject/stable:latest",
   "remoteUser": "fenics",
+  "updateRemoteUserUID": true,
+  "containerUser": "fenics",
   "customizations": {
     "vscode": {
-      "extensions": [
-        "ms-python.python",
-        "ms-toolsai.jupyter"
-      ],
-      "settings": {
-        "python.terminal.activateEnvironment": true
-      }
+      "extensions": ["ms-python.python"]
     }
   },
-  "forwardPorts": [8888],
-  "portsAttributes": {
-    "8888": {
-      "label": "Jupyter Notebook",
-      "onAutoForward": "openBrowser"
-    }
-  },
-  "runArgs": ["--ipc=host"],
-  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/${localWorkspaceFolderBasename},type=bind,consistency=cached",
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-  "postCreateCommand": "pip install matplotlib numpy scipy",
-  "hostRequirements": {
-    "vscode": {
-      "version": "1.85"
-    }
-  }
+  "runArgs": ["--init"],
+  "overrideCommand": true,
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/home/fenics/workspace,type=bind,consistency=cached"
+  ],
+  "workspaceFolder": "/home/fenics/workspace"
 }
