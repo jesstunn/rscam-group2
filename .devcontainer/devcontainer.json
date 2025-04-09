@@ -1,18 +1,29 @@
 {
-  "name": "Simple FEniCS",
-  "image": "quay.io/fenicsproject/stable:latest",
+  "name": "FEniCS Development Environment",
+  "build": {
+    "context": "..",
+    "dockerfile": "../Dockerfile"
+  },
   "remoteUser": "fenics",
-  "updateRemoteUserUID": true,
-  "containerUser": "fenics",
   "customizations": {
     "vscode": {
-      "extensions": ["ms-python.python"]
+      "extensions": [
+        "ms-python.python",
+        "ms-toolsai.jupyter"
+      ],
+      "settings": {
+        "python.terminal.activateEnvironment": true
+      }
     }
   },
-  "runArgs": ["--init"],
-  "overrideCommand": true,
-  "mounts": [
-    "source=${localWorkspaceFolder},target=/home/fenics/workspace,type=bind,consistency=cached"
-  ],
-  "workspaceFolder": "/home/fenics/workspace"
+  "forwardPorts": [8888],
+  "portsAttributes": {
+    "8888": {
+      "label": "Jupyter Notebook",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "runArgs": ["--ipc=host"],
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "postCreateCommand": "echo 'FEniCS environment ready!'"
 }
