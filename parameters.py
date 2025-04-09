@@ -28,14 +28,14 @@ class Parameters:
         # -----------------------------------------------
         # Fluid flow parameters
         # -----------------------------------------------
-        self.U_ref = 2.0           # Max. fluid flow velocity in mm/s
-        self.viscosity = 1.0       # Dimensionless 
+        self.U_ref = 0.012      # Max. fluid flow velocity in mm/s
+        self.viscosity = 1.0    # Dimensionless 
         
         # -----------------------------------------------
         # Solute parameters
         # -----------------------------------------------       
-        self.D_mms2 = 0.5      # Diffusion coefficient in mm^2 / s
-        self.mu = 1.0          # for Robin boundary (dc/dn = -mu * c)
+        self.D_mms2 = 0.0003   # Diffusion coefficient 3×10-10 m2/s converted to mm2/s
+        self.mu = 100          # for Robin boundary (dc/dn = -mu * c)
         
         # -----------------------------------------------
         # Validate parameters
