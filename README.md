@@ -7,7 +7,7 @@ This project simulates advection-diffusion in a channel with optional sulci on t
 The repository is organised into the following structure:
 
 - Main simulation files:
-  - `parameters.py`: Defines simulation parameters
+  - `parameters.py`: Defines simulation base parameters
   - `mesh.py`: Handles mesh generation and visualisation
   - `stokes.py`: Solves the Stokes equations for fluid flow
   - `adv_diff.py`: Solves the advection-diffusion equation for concentration
