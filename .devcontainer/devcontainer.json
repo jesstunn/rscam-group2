@@ -2,6 +2,9 @@
   "name": "FEniCS with Docker",
   "image": "quay.io/fenicsproject/stable:latest",
   "remoteUser": "fenics",
+  "containerEnv": {
+    "HOME": "/home/fenics"
+  },
   "customizations": {
     "vscode": {
       "extensions": [
