@@ -35,7 +35,7 @@ class Parameters:
         # Solute parameters
         # -----------------------------------------------       
         self.D_mms2 = 0.0003   # Diffusion coefficient 3×10-10 m2/s converted to mm2/s
-        self.mu = 1            # for Robin boundary (dc/dn = -mu * c)
+        self.mu = 10            # for Robin boundary (dc/dn = -mu * c)
         
         # -----------------------------------------------
         # Validate parameters
