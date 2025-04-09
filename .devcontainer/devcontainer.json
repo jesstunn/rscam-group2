@@ -1,7 +1,7 @@
 {
   "name": "FEniCS with Docker",
   "image": "quay.io/fenicsproject/stable:latest",
-  "remoteUser": "root",
+  "remoteUser": "fenics",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -23,5 +23,10 @@
   "runArgs": ["--ipc=host"],
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/${localWorkspaceFolderBasename},type=bind,consistency=cached",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-  "postCreateCommand": "apt-get update && apt-get install -y libc6 python3-pip && pip install matplotlib numpy scipy"
+  "postCreateCommand": "pip install matplotlib numpy scipy",
+  "hostRequirements": {
+    "vscodeVersion": {
+      "version": "1.81.0"
+    }
+  }
 }
