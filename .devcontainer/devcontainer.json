@@ -24,5 +24,9 @@
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/${localWorkspaceFolderBasename},type=bind,consistency=cached",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "postCreateCommand": "pip install matplotlib numpy scipy",
-  "vscodeServerVersion": "stable"
+  "hostRequirements": {
+    "vscode": {
+      "version": "1.85"
+    }
+  }
 }
