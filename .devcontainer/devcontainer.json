@@ -1,9 +1,6 @@
 {
-  "name": "FEniCS Development Environment",
-  "build": {
-    "context": "..",
-    "dockerfile": "../Dockerfile"
-  },
+  "name": "FEniCS with Docker",
+  "image": "quay.io/fenicsproject/stable:latest",
   "remoteUser": "fenics",
   "customizations": {
     "vscode": {
@@ -12,22 +9,9 @@
         "ms-toolsai.jupyter"
       ],
       "settings": {
-        "python.terminal.activateEnvironment": true,
-        "remote.downloadExtensionsFromMarketplace": true
-      },
-      "userSettings": {
-        "update.channel": "none",
-        "workbench.colorTheme": "Default Dark+",
-        "extensions.autoUpdate": false,
-        "extensions.autoCheckUpdates": false
+        "python.terminal.activateEnvironment": true
       }
-    },
-    "codespaces": {
-      "openFiles": []
     }
-  },
-  "hostRequirements": {
-    "vsCodeVersion": "1.85"
   },
   "forwardPorts": [8888],
   "portsAttributes": {
@@ -37,6 +21,7 @@
     }
   },
   "runArgs": ["--ipc=host"],
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/${localWorkspaceFolderBasename},type=bind,consistency=cached",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-  "postCreateCommand": "echo 'FEniCS environment ready!'"
+  "postCreateCommand": "pip install matplotlib numpy scipy"
 }
