@@ -2,7 +2,7 @@
 
 > **Warning**: This project should work with GitHub Codespaces using the provided devcontainer.json configuration. However, compatibility issues may occur with the latest VS Code versions. If you encounter any problems, please try using an earlier version of VS Code or run the code locally with the required dependencies installed.
 
-This repository contains a computational simulation framework for studying advection-diffusion phenomena with fluid flow in domains with complex geometries, particularly focused on studying the effects of sulci (indentations) on transport processes.
+This repository contains a computational simulation framework for studying Cerebrospinal fluid (CSF) flow and solute transporation phenomena in a domain that represents the Subarachnoid Space (SAS), with a focus on studying the effects of sulci (indentations on the lower boundary) on these processes.
 
 ## Code Structure
 
@@ -60,6 +60,15 @@ To run a single simulation with default parameters:
 python run_simulation.py
 ```
 
+### Custom Parameters
+
+For a  single simulation, you can customise parameters from the command line:
+
+```bash
+# Run with custom parameters
+python run_simulation.py --sulci 2 --pe 10 --mu 5
+```
+
 ### Specific Analysis Types
 
 To run specific types of analysis:
@@ -74,24 +83,36 @@ python run_simulation.py --no_sulci_study
 # Run sulci geometry study
 python run_simulation.py --sulci_geometry_study
 ```
+### Running All Analyses
 
-### Custom Parameters
-
-You can customise parameters from the command line:
+To run all analyses sequentially (single simulation, mass analysis, no-sulci analysis, and sulci geometry analysis):
 
 ```bash
-# Run with custom parameters
-python run_simulation.py --sulci 2 --pe 10 --mu 5
+python run_simulation.py --all
 ```
+
+> **Warning**: Running all analyses may take a considerable amount of time (depending on your hardware), as it involves multiple parameter sweeps and numerous individual simulations. Consider running specific analyses separately if you're only interested in particular results.
 
 ### Rerunning Visualisations
 
-You can regenerate plots without rerunning simulations (useful for changing plot styles):
+You can regenerate plots without rerunning simulations, which is useful when you want to:
+- Change plot styles or formatting
+- Create new visualisations from existing data
+- Export figures with different resolutions or formats
+
+Each analysis module saves its data in JSON format that can be reused. For example:
 
 ```bash
-# Regenerate sulci geometry comparison plots
-python sulci_geometry_analysis.py --rerun --json-file Results/sulci_geometry_analysis/comparison/comparison_data.json
+# Regenerate sulci geometry comparison plots using the default location
+python sulci_geometry_analysis.py --rerun
+
+# Or specify a custom JSON file path
+python sulci_geometry_analysis.py --rerun --json-file /path/to/your/comparison_data.json
 ```
+
+The `--json-file` parameter specifies the path to the JSON file containing previously calculated results. Each analysis saves these files automatically in their respective results directories (e.g., `Results/sulci_geometry_analysis/comparison/comparison_data.json`).
+
+> **Tip**: If you don't specify a JSON file, the script will look for data in the default location.
 
 ## Key Parameters
 
@@ -142,11 +163,3 @@ To add new analysis types:
 1. Create a new module based on existing analysis patterns
 2. Add plotting functions to the plotting.py module
 3. Add a runner function in run_simulation.py
-
-## License
-
-[Insert licence information here]
-
-## Contact
-
-[Insert contact information here]
