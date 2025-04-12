@@ -1,4 +1,4 @@
-# CSF Flow in the SAS Simulation Framework
+# CSF Flow in the SAS - Simulation Framework
 
 > **Warning**: This project should work with GitHub Codespaces using the provided devcontainer.json configuration. However, compatibility issues may occur with the latest VS Code versions. If you encounter any problems, please try using an earlier version of VS Code or run the code locally with the required dependencies installed.
 
