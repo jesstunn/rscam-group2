@@ -1,28 +1,34 @@
-# ========================================================
+##########################################################
 # Mass Analysis Module
+##########################################################
+
+# ========================================================
+# Imports
 # ========================================================
 
-# Import general moduels
+# Import general modules
 from dolfin import *
 import numpy as np
-import matplotlib.pyplot as plt
 import itertools
 import os
 from copy import deepcopy
-from mpl_toolkits.mplot3d import Axes3D  
 
-# Import our modules
+# Import project modules
 from parameters import Parameters
 from mesh import mesh_generator
 from stokes import stokes_solver
 from adv_diff import advdiff_solver, calculate_average_mass
-   
-def parameter_sweep_mass(params_range, fixed_params=None, save_fields=True):
+from plotting import plot_mass_results
+
+# ========================================================
+# Mass Parameter Sweep Functions
+# ========================================================
+
+def parameter_sweep_mass(params_range, fixed_params=None, save_fields=True, output_dir="Results/mass_analysis"):
     """
     Perform a parameter sweep to compute average mass for different parameter values.
     
     Parameters:
-    -----------
     params_range : dict
         Dictionary with parameter names as keys and lists of values to sweep over.
         E.g., {'Pe': [1, 10, 100], 'mu': [0, 0.1, 1, 10]}
@@ -30,9 +36,10 @@ def parameter_sweep_mass(params_range, fixed_params=None, save_fields=True):
         Dictionary with fixed parameter values for parameters not in params_range.
     save_fields : bool, optional
         Whether to save velocity, pressure, and concentration fields for ParaView
+    output_dir : str, optional
+        Directory to save results
         
     Returns:
-    --------
     dict
         Dictionary with parameter combinations and corresponding average mass values
     """
@@ -48,7 +55,7 @@ def parameter_sweep_mass(params_range, fixed_params=None, save_fields=True):
     
     # Create directories for ParaView files if needed
     if save_fields:
-        paraview_dir = 'mass_results/paraview'
+        paraview_dir = os.path.join(output_dir, 'paraview')
         os.makedirs(paraview_dir, exist_ok=True)
     
     # For all parameter combinations
@@ -119,7 +126,6 @@ def parameter_sweep_mass(params_range, fixed_params=None, save_fields=True):
         
         # Save fields for ParaView if requested
         if save_fields:
-
             # Create parameter-specific directory name
             param_str = '_'.join([f"{k}_{v}" for k, v in param_dict.items()])
             param_dir = os.path.join(paraview_dir, param_str)
@@ -135,123 +141,40 @@ def parameter_sweep_mass(params_range, fixed_params=None, save_fields=True):
     
     return results
 
-def plot_mass_results(results, x_param, y_param=None, log_scale=True):
-    """
-    Plot the results of a parameter sweep.
-    
-    Parameters:
-    results : dict
-        Results from parameter_sweep_mass
-    x_param : str
-        Parameter name to plot on x-axis
-    y_param : str, optional
-        If provided, create a heatmap with x_param and y_param
-    log_scale : bool, optional
-        Whether to use log scale for axes
-    """
-    # Set font sizes for the plots
-    plt.rcParams.update({
-        'font.size': 14,
-        'axes.titlesize': 18,
-        'axes.labelsize': 16,
-        'xtick.labelsize': 14,
-        'ytick.labelsize': 14,
-        'legend.fontsize': 14,
-    })
-    
-    # Create plots directory if it doesn't exist
-    os.makedirs('mass_results', exist_ok=True)
-    
-    # Extract data for plotting
-    params = results['parameters']
-    mass = results['total_mass']
-    
-    if y_param is None:
-        # 1D plot (line plot)
-        # Group by x_param
-        x_values = sorted(set(p[x_param] for p in params))
-        y_values = []
-        
-        for x in x_values:
-            # Find all masses for this x value
-            matching_indices = [i for i, p in enumerate(params) if p[x_param] == x]
-            avg_mass = np.mean([mass[i] for i in matching_indices])
-            y_values.append(avg_mass)
-        
-        # Create plot
-        plt.figure(figsize=(10, 6))
-        if log_scale and all(x > 0 for x in x_values):
-            plt.semilogx(x_values, y_values, 'o-')
-        else:
-            plt.plot(x_values, y_values, 'o-')
-        
-        plt.xlabel(f'{x_param}')
-        plt.ylabel('Average mass')
-        plt.grid(True)
-        plt.title(f'Average mass vs {x_param}')
-        
-        # Save plot
-        plt.savefig(f'mass_results/mass_vs_{x_param}.png', dpi=300)
-        plt.close()
-        
-    else:
-
-        # 2D plot (heatmap)
-        # Get unique values for both parameters
-        x_values = sorted(set(p[x_param] for p in params))
-        y_values = sorted(set(p[y_param] for p in params))
-        
-        # Create a grid for the heatmap
-        heat_data = np.zeros((len(y_values), len(x_values)))
-        
-        # Fill the grid
-        for i, y_val in enumerate(y_values):
-            for j, x_val in enumerate(x_values):
-                # Find matching parameter combination
-                matches = [idx for idx, p in enumerate(params) 
-                          if p[x_param] == x_val and p[y_param] == y_val]
-                
-                if matches:
-                    heat_data[i, j] = mass[matches[0]]
-        
-        # Create heatmap
-        plt.figure(figsize=(10, 8))
-        plt.imshow(heat_data, origin='lower', aspect='auto', cmap='viridis')
-        
-        # Set x and y ticks
-        plt.xticks(range(len(x_values)), x_values)
-        plt.yticks(range(len(y_values)), y_values)
-        
-        plt.xlabel(x_param)
-        plt.ylabel(y_param)
-        plt.colorbar(label='Average mass')
-        plt.title(f'Average mass as a function of {x_param} and {y_param}')
-        
-        # Save plot
-        plt.savefig(f'mass_results/mass_heatmap_{x_param}_{y_param}.png', dpi=300)
-        plt.close()
-
-def run_mass_analysis():
+def run_mass_analysis(output_dir="Results/mass_analysis"):
     """
     Run a comprehensive analysis of how average mass depends on Pe and mu.
+    
+    Parameters:
+    output_dir : str
+        Directory to save results
+        
+    Returns:
+    dict
+        Dictionary containing results for all parameter sweeps
     """
+    # Create output directory
+    os.makedirs(output_dir, exist_ok=True)
+    
     # 1. Single parameter sweeps
     
     # a. Effect of Pe with mu=0 (no uptake)
     print("Running Pe sweep with mu=0...")
     pe_results = parameter_sweep_mass(
         params_range={'Pe': [0.1, 1, 5, 10, 20, 50, 100, 200, 500]},
-        fixed_params={'mu': 0.0}
+        fixed_params={'mu': 0.0},
+        output_dir=output_dir
     )
-    plot_mass_results(pe_results, 'Pe')
+    plot_mass_results(pe_results, 'Pe', output_dir=output_dir)
     
     # b. Effect of mu with Pe=0 (no flow)
     print("Running mu sweep with Pe=0...")
     mu_results = parameter_sweep_mass(
         params_range={'mu': [0, 0.1, 0.5, 1, 2, 5, 10, 20]},
-        fixed_params={'Pe': 0}
+        fixed_params={'Pe': 0},
+        output_dir=output_dir
     )
-    plot_mass_results(mu_results, 'mu')
+    plot_mass_results(mu_results, 'mu', output_dir=output_dir)
     
     # 2. Two-parameter sweep
     print("Running Pe-mu parameter sweep...")
@@ -259,9 +182,10 @@ def run_mass_analysis():
         params_range={
             'Pe': [0.1, 1, 10, 100, 1000],
             'mu': [0, 0.1, 1, 10, 100]
-        }
+        },
+        output_dir=output_dir
     )
-    plot_mass_results(joint_results, 'Pe', 'mu', log_scale=True)
+    plot_mass_results(joint_results, 'Pe', 'mu', log_scale=True, output_dir=output_dir)
     
     # 3. Special case: mu >> Pe
     print("Analysing case where mu >> Pe...")
@@ -269,9 +193,10 @@ def run_mass_analysis():
         params_range={
             'Pe': [0.1, 1, 10],
             'mu': [100, 1000]
-        }
+        },
+        output_dir=output_dir
     )
-    plot_mass_results(high_mu_results, 'Pe', 'mu', log_scale=True)
+    plot_mass_results(high_mu_results, 'Pe', 'mu', log_scale=True, output_dir=output_dir)
     
     # 4. Special case: mu << Pe
     print("Analysing case where mu << Pe...")
@@ -279,9 +204,40 @@ def run_mass_analysis():
         params_range={
             'Pe': [100, 1000],
             'mu': [0.01, 0.1, 1]
-        }
+        },
+        output_dir=output_dir
     )
-    plot_mass_results(high_pe_results, 'Pe', 'mu', log_scale=True)
+    plot_mass_results(high_pe_results, 'Pe', 'mu', log_scale=True, output_dir=output_dir)
+    
+    # Save a summary of all results to a json file
+    import json
+    summary = {
+        'pe_results': {
+            'parameters': pe_results['parameters'],
+            'total_mass': [float(m) for m in pe_results['total_mass']]
+        },
+        'mu_results': {
+            'parameters': mu_results['parameters'],
+            'total_mass': [float(m) for m in mu_results['total_mass']]
+        },
+        'joint_results': {
+            'parameters': joint_results['parameters'],
+            'total_mass': [float(m) for m in joint_results['total_mass']]
+        },
+        'high_mu_results': {
+            'parameters': high_mu_results['parameters'],
+            'total_mass': [float(m) for m in high_mu_results['total_mass']]
+        },
+        'high_pe_results': {
+            'parameters': high_pe_results['parameters'],
+            'total_mass': [float(m) for m in high_pe_results['total_mass']]
+        }
+    }
+    
+    with open(os.path.join(output_dir, 'mass_analysis_summary.json'), 'w') as f:
+        json.dump(summary, f, indent=4)
+    
+    print(f"Mass analysis completed. Results saved to {output_dir}")
     
     return {
         'pe_results': pe_results,

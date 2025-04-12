@@ -1,11 +1,19 @@
-# ========================================================
+##########################################################
 # Stokes Solver Module
+##########################################################
+
+# ========================================================
+# Imports
 # ========================================================
 
 from dolfin import *
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+
+# ========================================================
+# Stokes Solver
+# ========================================================
 
 def stokes_solver(mesh, W, H, left, right, bottom, top):
     """
@@ -82,6 +90,10 @@ def stokes_solver(mesh, W, H, left, right, bottom, top):
     # Get sub-functions
     u, p = U.split()
     return u, p
+
+# ========================================================
+# Post-Process Functions
+# ========================================================
 
 def compute_multiple_flow_rates(u, mesh, num_sections=3):
     """
@@ -183,65 +195,5 @@ def compute_max_velocity(u):
     
     return max_vel
 
-def save_flow_fields(u, p, directory="results"):
-    """
-    Save velocity and pressure fields to files.
-    
-    Parameters:
-    u : dolfin.Function
-        Velocity field
-    p : dolfin.Function
-        Pressure field
-    directory : str, optional
-        Directory to save the files (default: "results")
-    """
-    import os
-    
-    # Create directory if it doesn't exist
-    os.makedirs(directory, exist_ok=True)
-    
-    # Save fields
-    File(os.path.join(directory, "velocity.pvd")) << u
-    File(os.path.join(directory, "pressure.pvd")) << p
-    
-    print(f"Flow fields saved to {directory}")
 
-def visualise_velocity(u, mesh, filename="visuals/velocity.png"):
-    """
-    Create and save a visualisation of the velocity field.
-    
-    Parameters:
-    u : dolfin.Function
-        Velocity field
-    mesh : dolfin.Mesh
-        Computational mesh
-    filename : str, optional
-        Path to save the visualisation (default: "visuals/velocity.png")
-    """
 
-    # Set font sizes
-    plt.rcParams.update({
-        'font.size': 14,
-        'axes.titlesize': 18,
-        'axes.labelsize': 16,
-        'xtick.labelsize': 14,
-        'ytick.labelsize': 14,
-        'legend.fontsize': 14,
-    })
-    
-    # Create directory if it doesn't exist
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
-    
-    # Create figure
-    plt.figure(figsize=(10, 6))
-    
-    # Plot velocity magnitude
-    vel_mag = sqrt(dot(u, u))
-    c = plot(vel_mag, title="Velocity Magnitude")
-    plt.colorbar(c)
-    
-    # Save figure
-    plt.savefig(filename, dpi=300)
-    plt.close()
-    
-    print(f"Velocity visualisation saved to {filename}")

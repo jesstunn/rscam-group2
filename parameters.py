@@ -1,3 +1,7 @@
+##########################################################
+# Parameters Module
+##########################################################
+
 # ========================================================
 # Parameters Class
 # ========================================================
@@ -15,15 +19,16 @@ class Parameters:
         self.L_mm = 10.0
         self.H_mm = 1.0
 
-        self.nx = 1000
-        self.ny = 100
-
         self.sulci_n = 1
         self.sulci_h_mm = 2.0
         self.sulci_width_mm = 1.0
         
         # Resolution for mesh generation
         self.resolution = 50
+
+        # Set nx depending on number of sulci
+        self.nx = 1000 * (self.sulci_n + 1)
+        self.ny = 100
 
         # -----------------------------------------------
         # Fluid flow parameters

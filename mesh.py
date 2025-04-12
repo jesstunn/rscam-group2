@@ -1,5 +1,9 @@
+##########################################################
+# Mesh Module
+##########################################################
+
 # ========================================================
-# Packages
+# Imports
 # ========================================================
 
 from dolfin import *
@@ -169,63 +173,3 @@ def mesh_generator(resolution,
         "boundary_markers": boundary_markers,
         "mesh_info": mesh_info
     }
-
-# ========================================================
-# Function to view the mesh as a plot
-# ========================================================
-
-def visualise_mesh(mesh_data, filename="mesh.png"):
-    """
-    Save a visualisation of the mesh to a file in the 'visuals' folder.
-    
-    Parameters:
-    mesh_data : dict or dolfin.Mesh
-        Either the mesh object directly or the dictionary returned by mesh_generator
-    filename : str, optional
-        Name of the file of the mesh image, default is "mesh.png"
-    """
-    import matplotlib.pyplot as plt
-    import os
-
-    # Set font sizes
-    plt.rcParams.update({
-        'font.size': 14,
-        'axes.titlesize': 18,
-        'axes.labelsize': 16,
-        'xtick.labelsize': 14,
-        'ytick.labelsize': 14,
-        'legend.fontsize': 14,
-    })
-        
-    # Extract mesh from input
-    if isinstance(mesh_data, dict) and "mesh" in mesh_data:
-        mesh = mesh_data["mesh"]
-        mesh_info = mesh_data.get("mesh_info", {})
-    else:
-        mesh = mesh_data
-        mesh_info = {}
-    
-    # Create figure
-    plt.figure(figsize=(10, 6))
-    
-    # Plot the mesh
-    plot(mesh, title="Mesh")
-    
-    # Add mesh statistics annotation if available
-    if mesh_info:
-        info_text = (
-            f"Vertices: {mesh_info.get('num_vertices', mesh.num_vertices())}\n"
-            f"Cells: {mesh_info.get('num_cells', mesh.num_cells())}\n"
-            f"Min cell size: {mesh_info.get('hmin', mesh.hmin()):.4f}\n"
-            f"Sulci depth: {mesh_info.get('sulci_depth', 0):.4f}"
-        )
-        plt.annotate(info_text, xy=(0.02, 0.02), xycoords='axes fraction',
-                    bbox=dict(boxstyle="round,pad=0.3", fc="white", alpha=0.8))
-    
-    # Save the file
-    try:
-        plt.savefig(filename, dpi=300)
-        plt.close()
-        print(f"Mesh visualisation saved to {filename}")
-    except Exception as e:
-        print(f"Error: Failed to save mesh plot to {filename}: {str(e)}")

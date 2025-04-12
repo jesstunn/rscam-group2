@@ -1,10 +1,18 @@
-# ========================================================
+##########################################################
 # Advection-Diffusion Solver Module
+##########################################################
+
+# ========================================================
+# Imports
 # ========================================================
 
 from dolfin import *
 import numpy as np
 import os
+
+# ========================================================
+# Advection-Diffusion Solver
+# ========================================================
 
 def advdiff_solver(mesh, left, right, bottom,
                    u, C,
@@ -13,7 +21,6 @@ def advdiff_solver(mesh, left, right, bottom,
     Solve the advection-diffusion equation for concentration field.
     
     Parameters:
-    -----------
     mesh : dolfin.Mesh
         The computational mesh
     left, right, bottom : function
@@ -28,7 +35,6 @@ def advdiff_solver(mesh, left, right, bottom,
         Robin boundary condition coefficient (uptake parameter)
     
     Returns:
-    --------
     c_sol : dolfin.Function
         Concentration field solution
     """
@@ -45,7 +51,7 @@ def advdiff_solver(mesh, left, right, bottom,
     # Solving System
     # ----------------------------------------------------
 
-    # Mark bottom boundary and imaginary boundary
+    # Mark bottom boundary 
     boundaries = MeshFunction("size_t", mesh, mesh.topology().dim() - 1)
     boundaries.set_all(0)
 
@@ -53,7 +59,6 @@ def advdiff_solver(mesh, left, right, bottom,
         def inside(self, x, on_boundary):
             return bottom(x, on_boundary)     
 
-    # Mark boundary
     bottom_id = 1
     BottomBoundary().mark(boundaries, bottom_id)
 
@@ -81,6 +86,10 @@ def advdiff_solver(mesh, left, right, bottom,
     solve(a_c == L_c, c_sol, bcs_c)
 
     return c_sol
+
+# ========================================================
+# Post-Process Functions
+# ========================================================
 
 def calculate_total_mass(c, mesh):
     """
@@ -175,145 +184,8 @@ def compute_uptake_flux(c, mesh, bottom, D, mu):
     n = FacetNormal(mesh)
     
     # Compute flux: integral of (D*grad(c)·n + mu*c) over bottom boundary
-    # Note: For Robin condition, flux = D*grad(c)·n = -mu*c
+    # Note: For Robin condition, flux = D*grad(c) dot n = -mu*c
     flux = assemble(D * dot(grad(c), n) * ds(1))
     
     return flux
 
-def save_concentration_field(c, directory="results"):
-    """
-    Save concentration field to a file.
-    
-    Parameters:
-    -----------
-    c : dolfin.Function
-        Concentration field
-    directory : str, optional
-        Directory to save the file (default: "results")
-    """
-    import os
-    
-    # Create directory if it doesn't exist
-    os.makedirs(directory, exist_ok=True)
-    
-    # Save field
-    File(os.path.join(directory, "concentration.pvd")) << c
-    
-    print(f"Concentration field saved to {directory}")
-
-def visualise_concentration(c, mesh, filename="visuals/concentration.png"):
-    """
-    Create and save a visualisation of the concentration field.
-    
-    Parameters:
-    -----------
-    c : dolfin.Function
-        Concentration field
-    mesh : dolfin.Mesh
-        Computational mesh
-    filename : str, optional
-        Path to save the visualisation (default: "visuals/concentration.png")
-    """
-    import matplotlib.pyplot as plt
-    import os
-
-    # Set font sizes for plot
-    plt.rcParams.update({
-        'font.size': 14,
-        'axes.titlesize': 18,
-        'axes.labelsize': 16,
-        'xtick.labelsize': 14,
-        'ytick.labelsize': 14,
-        'legend.fontsize': 14,
-    })
-    
-    # Create directory if it doesn't exist
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
-    
-    # Create figure
-    plt.figure(figsize=(10, 6))
-    
-    # Plot concentration
-    plot_c = plot(c, title="Concentration Field")
-    plt.colorbar(plot_c)
-    
-    # Save figure
-    plt.savefig(filename, dpi=300)
-    plt.close()
-    
-    print(f"Concentration visualisation saved to {filename}")
-
-def plot_concentration_profiles(c, mesh, num_profiles=5, filename="visuals/concentration_profiles.png"):
-    """
-    Create plots of concentration profiles at different x-positions.
-    
-    Parameters:
-    -----------
-    c : dolfin.Function
-        Concentration field
-    mesh : dolfin.Mesh
-        Computational mesh
-    num_profiles : int, optional
-        Number of profiles to plot (default: 5)
-    filename : str, optional
-        Path to save the visualisation (default: "visuals/concentration_profiles.png")
-    """
-    import matplotlib.pyplot as plt
-    import numpy as np
-    import os
-
-    # Set font sizes
-    plt.rcParams.update({
-        'font.size': 14,
-        'axes.titlesize': 18,
-        'axes.labelsize': 16,
-        'xtick.labelsize': 14,
-        'ytick.labelsize': 14,
-        'legend.fontsize': 14,
-    })
-    
-    # Create directory if it doesn't exist
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
-    
-    # Get mesh coordinates
-    coords = mesh.coordinates()
-    x_min = coords[:, 0].min()
-    x_max = coords[:, 0].max()
-    y_min = coords[:, 1].min()
-    y_max = coords[:, 1].max()
-    
-    # Create figure
-    plt.figure(figsize=(10, 6))
-    
-    # Define x positions for profiles
-    x_positions = np.linspace(x_min + 0.1*(x_max - x_min), 
-                               x_max - 0.1*(x_max - x_min), 
-                               num_profiles)
-    
-    # Sample y positions
-    y_positions = np.linspace(y_min, y_max, 100)
-    
-    # Create profiles
-    for x_pos in x_positions:
-        # Sample concentration along vertical line
-        try:
-            # For newer FEniCS versions
-            c_values = np.array([c(Point(x_pos, y)) for y in y_positions])
-        except:
-            # For older FEniCS versions
-            c_values = np.array([c(x_pos, y) for y in y_positions])
-            
-        plt.plot(c_values, y_positions, label=f'x = {x_pos:.2f}')
-    
-    # Add labels and legend
-    plt.xlabel('Concentration')
-    plt.ylabel('y coordinate')
-    plt.title('Concentration Profiles at Different x-positions')
-    plt.grid(True)
-    plt.legend()
-    
-    # Save figure
-    plt.savefig(filename, dpi=300)
-    plt.close()
-    
-    print(f"Concentration profiles saved to {filename}")
