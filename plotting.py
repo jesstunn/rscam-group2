@@ -256,15 +256,7 @@ def plot_mass_results(results, x_param, y_param=None, log_scale=True, output_dir
 
 def plot_no_sulci_comparison(no_sulci_results, with_sulci_results, output_dir="Results/no_sulci_analysis/comparison"):
     """
-    Create comparative Visualisations for the no sulci analysis.
-    
-    Parameters:
-    no_sulci_results : dict
-        Results from simulation with no sulci
-    with_sulci_results : dict
-        Results from simulation with sulci
-    output_dir : str
-        Directory to save comparison plots
+    Create comparative visualisations for the no sulci analysis.
     """
     set_plotting_style()
     
@@ -275,15 +267,29 @@ def plot_no_sulci_comparison(no_sulci_results, with_sulci_results, output_dir="R
         # Compare concentration fields
         plt.figure(figsize=(12, 5))
         
-        # Plot no sulci concentration
-        plt.subplot(1, 2, 1)
-        plot(no_sulci_results['c'], title="Concentration (No Sulci)")
-        plt.colorbar()
+        # Plot no sulci concentration - first subplot
+        ax1 = plt.subplot(1, 2, 1)
+        try:
+            # Try to get the velocity magnitude for a more reliable plot
+            c1 = no_sulci_results['c']
+            c1_plot = plot(c1)
+            plt.colorbar(c1_plot)
+            plt.title("Concentration (No Sulci)")
+        except Exception as e:
+            print(f"Error plotting no-sulci concentration: {e}")
+            plt.title("Concentration (No Sulci) - Plot Failed")
         
-        # Plot with sulci concentration
-        plt.subplot(1, 2, 2)
-        plot(with_sulci_results['c'], title="Concentration (With Sulci)")
-        plt.colorbar()
+        # Plot with sulci concentration - second subplot
+        ax2 = plt.subplot(1, 2, 2)
+        try:
+            # Try to get the velocity magnitude for a more reliable plot
+            c2 = with_sulci_results['c']
+            c2_plot = plot(c2)
+            plt.colorbar(c2_plot)
+            plt.title("Concentration (With Sulci)")
+        except Exception as e:
+            print(f"Error plotting with-sulci concentration: {e}")
+            plt.title("Concentration (With Sulci) - Plot Failed")
         
         plt.tight_layout()
         plt.savefig(os.path.join(output_dir, "concentration_comparison.png"), dpi=300)
@@ -292,22 +298,40 @@ def plot_no_sulci_comparison(no_sulci_results, with_sulci_results, output_dir="R
         # Compare velocity fields
         plt.figure(figsize=(12, 5))
         
-        # Plot no sulci velocity
-        plt.subplot(1, 2, 1)
-        plot(no_sulci_results['u'], title="Velocity (No Sulci)")
-        plt.colorbar()
+        # Plot no sulci velocity - first subplot
+        ax1 = plt.subplot(1, 2, 1)
+        try:
+            # Try to get the velocity magnitude for a more reliable plot
+            u1 = no_sulci_results['u']
+            u1_mag = sqrt(dot(u1, u1))  # This might be more reliable for plotting
+            u1_plot = plot(u1_mag)
+            plt.colorbar(u1_plot)
+            plt.title("Velocity Magnitude (No Sulci)")
+        except Exception as e:
+            print(f"Error plotting no-sulci velocity: {e}")
+            plt.title("Velocity (No Sulci) - Plot Failed")
         
-        # Plot with sulci velocity
-        plt.subplot(1, 2, 2)
-        plot(with_sulci_results['u'], title="Velocity (With Sulci)")
-        plt.colorbar()
+        # Plot with sulci velocity - second subplot
+        ax2 = plt.subplot(1, 2, 2)
+        try:
+            # Try to get the velocity magnitude for a more reliable plot
+            u2 = with_sulci_results['u']
+            u2_mag = sqrt(dot(u2, u2))  # This might be more reliable for plotting
+            u2_plot = plot(u2_mag)
+            plt.colorbar(u2_plot)
+            plt.title("Velocity Magnitude (With Sulci)")
+        except Exception as e:
+            print(f"Error plotting with-sulci velocity: {e}")
+            plt.title("Velocity (With Sulci) - Plot Failed")
         
         plt.tight_layout()
         plt.savefig(os.path.join(output_dir, "velocity_comparison.png"), dpi=300)
         plt.close()
         
     except Exception as e:
-        print("Error: Could not create comparison Visualisations: {}".format(e))
+        print("Error: Could not create comparison visualisations: {}".format(e))
+        import traceback
+        traceback.print_exc()
 
 # ========================================================
 # Sulci Geometry Analysis Plotting
