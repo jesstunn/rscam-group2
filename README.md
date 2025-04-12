@@ -1,141 +1,152 @@
-# Advection-Diffusion Simulation with Sulci
+# Advection-Diffusion Simulation Framework
 
-This project simulates advection-diffusion in a channel with optional sulci on the bottom boundary. The code is designed to study how flow and solute transport are affected by various parameters including Peclet number, uptake rate, and sulci geometry.
+> **Warning**: This project should work with GitHub Codespaces using the provided devcontainer.json configuration. However, compatibility issues may occur with the latest VS Code versions. If you encounter any problems, please try using an earlier version of VS Code or run the code locally with the required dependencies installed.
 
-## Project Structure
+This repository contains a computational simulation framework for studying advection-diffusion phenomena with fluid flow in domains with complex geometries, particularly focused on studying the effects of sulci (indentations) on transport processes.
 
-The repository is organised into the following structure:
+## Code Structure
 
-- Main simulation files:
-  - `parameters.py`: Defines simulation base parameters
-  - `mesh.py`: Handles mesh generation and visualisation
-  - `stokes.py`: Solves the Stokes equations for fluid flow
-  - `adv_diff.py`: Solves the advection-diffusion equation for concentration
-  - `mass_analysis.py`: Analyses how mass depends on Peclet number and uptake
-  - `sulci_analysis.py`: Studies the effect of differing sulci geometry
-  - `run_simulation.py`: Main script to run simulations and parameter studies
+The codebase is organised into several modules with clear responsibilities:
 
-- `development/`: Contains preliminary work and test files used during the development process
-  - Draft versions of simulation components
-  - Test problems with simplified geometries
-  - Experimental implementations
-  - Alternative approaches that were explored
+### Core Simulation Modules
 
-## Prerequisites
+These modules contain the fundamental numerical methods and physics models:
 
-- Python 3.6 or higher
-- FEniCS (with DOLFIN)
-- NumPy
-- Matplotlib
+- **parameters.py**: Defines the `Parameters` class that stores all simulation parameters, handles validation, and performs non-dimensionalisation.
+- **mesh.py**: Contains the mesh generation functionality, including creation of domains with sulci.
+- **stokes.py**: Implements the Stokes equations solver for incompressible fluid flow.
+- **adv_diff.py**: Implements the advection-diffusion equation solver for concentration fields.
 
-## Basic Usage
+### Analysis Modules
 
-### Running a Single Simulation
+These modules implement specific analysis types:
+
+- **mass_analysis.py**: Performs parameter sweeps to analyse how average mass depends on Péclet number (Pe) and uptake parameter (μ).
+- **no_sulci_analysis.py**: Compares simulations with and without sulci to quantify their effects.
+- **sulci_geometry_analysis.py**: Studies how different sulci geometries (height and width variations) affect transport under different flow and uptake conditions.
+
+### Visualisation and Runner Modules
+
+- **plotting.py**: Contains all visualisation functions, separated for reusability.
+- **run_simulation.py**: The main entry point that ties everything together and provides command-line functionality.
+
+### Results Organisation
+
+All simulation results are stored in a structured way:
+
+```
+Results/
+  ├── simulation/               # Default single simulation results
+  ├── mass_analysis/            # Results from mass parameter sweeps
+  ├── no_sulci_analysis/        # Comparison of cases with/without sulci
+  └── sulci_geometry_analysis/  # Studies on different sulci geometries
+```
+
+Each analysis directory contains:
+- Input parameter records
+- Solution fields in ParaView format
+- Visualisation plots
+- Summary JSON files with key metrics
+
+## How to Run Simulations
+
+The framework can be used in various ways depending on your needs.
+
+### Basic Simulation
 
 To run a single simulation with default parameters:
 
 ```bash
-python3 run_simulation.py
+python run_simulation.py
 ```
 
-This will save results in the `simulation_results` directory.
+### Specific Analysis Types
 
-### Customising Parameters
-
-You can specify parameters directly from the command line:
+To run specific types of analysis:
 
 ```bash
-python3 run_simulation.py --sulci 2 --pe 10 --mu 5
+# Run mass parameter study
+python run_simulation.py --mass_study
+
+# Run no-sulci comparison
+python run_simulation.py --no_sulci_study
+
+# Run sulci geometry study
+python run_simulation.py --sulci_geometry_study
 ```
 
-This runs a simulation with:
-- 2 sulci
-- Peclet number of 10
-- Uptake parameter of 5
+### Custom Parameters
 
-### Specifying Output Directory
-
-Change the output directory using `--output-dir`:
+You can customise parameters from the command line:
 
 ```bash
-python3 run_simulation.py --output-dir custom_results
+# Run with custom parameters
+python run_simulation.py --sulci 2 --pe 10 --mu 5
 ```
 
-## Parameter Studies
+### Rerunning Visualisations
 
-### Mass Analysis Study
-
-To run a comprehensive analysis of how average mass depends on Peclet number and uptake parameter:
+You can regenerate plots without rerunning simulations (useful for changing plot styles):
 
 ```bash
-python3 run_simulation.py --mass_study
+# Regenerate sulci geometry comparison plots
+python sulci_geometry_analysis.py --rerun --json-file Results/sulci_geometry_analysis/comparison/comparison_data.json
 ```
 
-This will:
-1. Run simulations for various Pe and mu combinations
-2. Generate plots showing how mass varies with each parameter
-3. Save results in `mass_study_results` directory
+## Key Parameters
 
-### Sulci Geometry Study
+- **Pe (Péclet number)**: Ratio of advective to diffusive transport rates
+- **μ (Mu)**: Uptake parameter for Robin boundary condition
+- **sulci_n**: Number of sulci on the bottom boundary
+- **sulci_h_mm**: Height of sulci in mm
+- **sulci_width_mm**: Width of sulci in mm
 
-To analyse how sulci geometry (height and width) affects flow and concentration:
+## Requirements
 
-```bash
-python3 run_simulation.py --sulci_study
+- FEniCS (with DOLFIN and mshr modules)
+- NumPy
+- Matplotlib
+- Python 3.6+
+
+## Example Usage
+
+Here's a complete example of running a custom simulation followed by analysis:
+
+```python
+from parameters import Parameters
+from run_simulation import run_simulation, run_all_analyses
+
+# Create custom parameters
+params = Parameters()
+params.sulci_n = 3            # Three sulci
+params.sulci_h_mm = 1.5       # 1.5mm high
+params.sulci_width_mm = 0.8   # 0.8mm wide
+params.U_ref = 0.02           # Fluid velocity reference (mm/s)
+params.mu = 5                 # Uptake parameter
+
+# Run single simulation
+results = run_simulation(params, "Results/my_custom_simulation")
+
+# Run all analyses with default settings
+all_results = run_all_analyses()
+
+# Access results
+print(f"Total mass: {results['total_mass']}")
+print(f"Flow rate: {results['flow_rate']}")
 ```
 
-This will:
-1. Run simulations for four geometry cases:
-   - Small height, small width
-   - Small height, large width
-   - Large height, small width
-   - Large height, large width
-2. Generate comparison plots
-3. Save results in `sulci_study_results` directory
+## Extending the Framework
 
-## Visualisation
+To add new analysis types:
 
-The simulation results can be visualised in several ways:
+1. Create a new module based on existing analysis patterns
+2. Add plotting functions to the plotting.py module
+3. Add a runner function in run_simulation.py
 
-1. **PNG Images**: Automatically generated in the directory of results
-   - Mesh visualisation
-   - Velocity field
-   - Concentration field
+## License
 
-2. **ParaView Files**: Saved in the results directory
-   - `velocity.pvd`: Velocity field for ParaView
-   - `pressure.pvd`: Pressure field for ParaView
-   - `concentration.pvd`: Concentration field for ParaView
+[Insert licence information here]
 
-## Output Data
+## Contact
 
-Each simulation saves:
-- Solution fields (velocity, pressure, concentration)
-- Visual plots
-- A `simulation_summary.json` file with parameters and key results
-
-Parameter studies generate additional plots and comparison data.
-
-## Examples
-
-```bash
-# Basic simulation with default parameters
-python3 run_simulation.py
-
-# Simulation with custom parameters
-python3 run_simulation.py --sulci 3 --pe 20 --mu 2
-
-# Mass parameter study with custom output directory
-python3 run_simulation.py --mass_study --output-dir mass_analysis_june
-
-# Sulci geometry study with custom output directory
-python3 run_simulation.py --sulci_study --output-dir sulci_study_june
-```
-
-## Extending the Code
-
-To modify or extend this code:
-
-1. **Add New Parameters**: Edit the `Parameters` class in `parameters.py`
-2. **Change Boundary Conditions**: Modify the appropriate solver function
-3. **Add New Analysis Types**: Create a new analysis module following the pattern of `mass_analysis.py` or `sulci_analysis.py`
+[Insert contact information here]
