@@ -153,7 +153,6 @@ all_results = run_all_analyses()
 
 # Access results
 print(f"Total mass: {results['total_mass']}")
-print(f"Flow rate: {results['flow_rate']}")
 ```
 
 ## Extending the Framework
