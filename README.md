@@ -57,7 +57,7 @@ The framework can be used in various ways depending on your needs.
 To run a single simulation with default parameters:
 
 ```bash
-python run_simulation.py
+python3 run_simulation.py
 ```
 
 ### Custom Parameters
@@ -66,7 +66,7 @@ For a  single simulation, you can customise parameters from the command line:
 
 ```bash
 # Run with custom parameters
-python run_simulation.py --sulci 2 --pe 10 --mu 5
+python3 run_simulation.py --sulci 2 --pe 10 --mu 5
 ```
 
 ### Specific Analysis Types
@@ -75,20 +75,20 @@ To run specific types of analysis:
 
 ```bash
 # Run mass parameter study
-python run_simulation.py --mass_study
+python3 run_simulation.py --mass_study
 
 # Run no-sulci comparison
-python run_simulation.py --no_sulci_study
+python3 run_simulation.py --no_sulci_study
 
 # Run sulci geometry study
-python run_simulation.py --sulci_geometry_study
+python3 run_simulation.py --sulci_geometry_study
 ```
 ### Running All Analyses
 
 To run all analyses sequentially (single simulation, mass analysis, no-sulci analysis, and sulci geometry analysis):
 
 ```bash
-python run_simulation.py --all
+python3 run_simulation.py --all
 ```
 
 > **Warning**: Running all analyses may take a considerable amount of time (depending on your hardware), as it involves multiple parameter sweeps and numerous individual simulations. Consider running specific analyses separately if you're only interested in particular results.
@@ -104,10 +104,10 @@ Each analysis module saves its data in JSON format that can be reused. For examp
 
 ```bash
 # Regenerate sulci geometry comparison plots using the default location
-python sulci_geometry_analysis.py --rerun
+python3 sulci_geometry_analysis.py --rerun
 
 # Or specify a custom JSON file path
-python sulci_geometry_analysis.py --rerun --json-file /path/to/your/comparison_data.json
+python3 sulci_geometry_analysis.py --rerun --json-file /path/to/your/comparison_data.json
 ```
 
 The `--json-file` parameter specifies the path to the JSON file containing previously calculated results. Each analysis saves these files automatically in their respective results directories (e.g., `Results/sulci_geometry_analysis/comparison/comparison_data.json`).
