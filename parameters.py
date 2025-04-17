@@ -35,7 +35,8 @@ class Parameters:
         # -----------------------------------------------
         self.U_ref = 0.012      # Max. fluid flow velocity in mm/s
         self.viscosity = 1.0    # Dimensionless 
-        
+        self.rho = 1.0          # Dimensionless 
+
         # -----------------------------------------------
         # Solute parameters
         # -----------------------------------------------       
@@ -111,15 +112,18 @@ class Parameters:
         self.Pe = (self.U_ref * self.L_ref) / self.D_mms2
         self.D = 1.0 / self.Pe
 
+        # Reynolds number calculation
+        self.Re = (self.rho * self.U_ref * self.L_ref) / self.viscosity
+
     def __str__(self):
         """Statement of parameters for logging and debugging."""
         param_str = "Simulation Parameters:\n"
         param_str += f"  Domain: L={self.L_mm}mm x H={self.H_mm}mm\n"
         param_str += f"  Mesh: {self.nx}x{self.ny} points, resolution={self.resolution}\n"
         param_str += f"  Sulci: n={self.sulci_n}, height={self.sulci_h_mm}mm, width={self.sulci_width_mm}mm\n"
-        param_str += f"  Flow: U_ref={self.U_ref}mm/s, viscosity={self.viscosity}\n"
+        param_str += f"  Flow: U_ref={self.U_ref}mm/s, viscosity={self.viscosity}, density={self.rho}g/mm³\n"
         param_str += f"  Solute: D={self.D_mms2}mm²/s, mu={self.mu}\n"
-        param_str += f"  Non-dimensional: Pe={self.Pe}, D={self.D}\n"
+        param_str += f"  Non-dimensional: Pe={self.Pe}, D={self.D}, Re={self.Re}\n"
         return param_str
     
     def load_from_dict(self, params_dict):
@@ -154,6 +158,7 @@ class Parameters:
             'resolution': self.resolution,
             'U_ref': self.U_ref,
             'viscosity': self.viscosity,
+            'rho': self.rho,
             'D_mms2': self.D_mms2,
             'mu': self.mu
         }
